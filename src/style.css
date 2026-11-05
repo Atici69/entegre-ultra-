@@ -38,3 +38,22 @@ footer{border-top:1px solid #e9edf3;padding:17px 38px;color:#9ba5b3;font-size:9p
 .banner-symbol{width:34px;height:34px;border-radius:9px;background:#eef3fa;color:#536b8d;display:grid;place-items:center}
 .banner-row>div{display:grid;gap:4px;flex:1}.banner-row strong{font-size:11px;color:#34445e}.banner-row small,.muted-note{font-size:9px;color:#929eaf}.muted-note{line-height:1.6;margin-top:18px}
 @media(max-width:760px){.buybox-layout{grid-template-columns:1fr}.banner-form{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}}
+
+/* Entegre Ultra signature palette: marketplace-inspired orange + blue */
+:root{--eu-orange:#f36b21;--eu-orange-soft:#fff1e8;--eu-blue:#2878c7;--eu-blue-soft:#eaf3fc}
+.brand-mark{background:linear-gradient(135deg,var(--eu-orange) 0%,#f59a32 48%,var(--eu-blue) 100%);color:#fff}
+.brand strong span{color:#ff8a3d}
+.nav-item.active{box-shadow:inset 3px 0 var(--eu-orange)}
+.primary-button{background:var(--eu-blue)}
+.primary-button:hover{background:#1e5f9f}
+.trial-banner{background:var(--eu-orange-soft);border-color:#f8d5c1}
+.trial-icon{background:#ffe0cf;color:#c95718}
+.trial-banner strong{color:#78401f}
+.trial-banner p{color:#a56d4d}
+.trial-banner button{color:#c65b22}
+.stat-icon{background:var(--eu-blue-soft);color:var(--eu-blue)}
+.mode-card.selected{border-color:var(--eu-blue);background:var(--eu-blue-soft);box-shadow:0 0 0 2px #dcecfb}
+.notice-box{background:#f0f6fc;color:#526d8b}
+.banner-symbol{background:var(--eu-orange-soft);color:var(--eu-orange)}
+.workspace-dot{background:#38b78b}
+@media(max-width:650px){.primary-button{background:var(--eu-blue)}}
