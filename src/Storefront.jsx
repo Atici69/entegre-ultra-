@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ArrowRight, BarChart3, Boxes, Building2, CheckCircle2, ChevronDown, Handshake, Layers3, Menu, Network, ShieldCheck, Store, X, Zap } from 'lucide-react';
+import { ArrowRight, BarChart3, Boxes, Building2, CheckCircle2, ChevronDown, Handshake, Layers3, Menu, Network, ShieldCheck, Store, TrendingUp, Trophy, X, Zap } from 'lucide-react';
 
 const features = [
+  { icon: Trophy, title: 'Akıllı Buybox yönetimi', text: 'Rakip fiyatlarını izleyin, kâr sınırınızı koruyun ve Buybox performansınızı tek merkezden yönetin.' },
   { icon: Store, title: 'Mağaza yönetimi', text: 'Ürünlerinizi ve mağaza operasyonlarınızı tek merkezden takip edin.' },
   { icon: Boxes, title: 'Ürün ve stok takibi', text: 'Ürün kataloğunuzu düzenleyin, stok bilgilerinizi kontrol altında tutun.' },
   { icon: BarChart3, title: 'Buybox ve fiyat takibi', text: 'Pazaryeri rekabetini izlemek ve fiyat kararlarınızı desteklemek için tasarlandı.' },
@@ -59,7 +60,7 @@ export default function Storefront() {
       <a className="corp-brand" href="#anasayfa" aria-label="Entegre Ultra ana sayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
-        <a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
+        <a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
         <a href="#hakkimizda" onClick={() => setMenuOpen(false)}>Hakkımızda</a>
         <a href="#bayilik" onClick={() => setMenuOpen(false)}>Bayilik</a>
         <button onClick={openApplication}>Bayi başvurusu <ArrowRight size={16}/></button>
@@ -88,11 +89,28 @@ export default function Storefront() {
     </main> : <>
       <main>
         <section className="corp-hero" id="anasayfa">
-          <div className="corp-hero-content"><span className="corp-kicker"><i/> TİCARETİNİZ İÇİN ENTEGRE ÇÖZÜM</span><h1>İşinizi tek merkezden <em>yönetin.</em></h1><p>Entegre Ultra; mağaza, ürün, pazaryeri ve bayi operasyonlarını bir araya getirme hedefiyle geliştirilen yeni nesil yönetim platformudur.</p><div className="corp-hero-actions"><a className="corp-primary" href="#cozumler">Çözümlerimizi keşfedin <ArrowRight size={17}/></a><button className="corp-secondary" onClick={openApplication}>Bayi ağımıza katılın</button></div><div className="corp-trust-line"><ShieldCheck size={17}/> İş süreçlerinizi tek noktadan takip etme yaklaşımı</div></div>
+          <div className="corp-hero-content"><span className="corp-kicker"><i/> TİCARETİNİZ İÇİN ENTEGRE ÇÖZÜM</span><h1>İşinizi tek merkezden <em>yönetin.</em></h1><p>Entegre Ultra; mağaza, ürün, pazaryeri ve bayi operasyonlarını bir araya getirme hedefiyle geliştirilen yeni nesil yönetim platformudur.</p><div className="corp-hero-actions"><a className="corp-primary" href="#buybox">Buybox sistemini keşfedin <ArrowRight size={17}/></a><button className="corp-secondary" onClick={openApplication}>Bayi ağımıza katılın</button></div><div className="corp-trust-line"><ShieldCheck size={17}/> İş süreçlerinizi tek noktadan takip etme yaklaşımı</div></div>
           <div className="corp-hero-visual"><div className="corp-glow"/><div className="corp-dashboard-card"><div className="corp-dash-top"><span/><span/><span/><b>ENTEGRE ULTRA</b></div><div className="corp-dash-title">Yönetim merkezi</div><div className="corp-dash-stats"><div><small>Ürün yönetimi</small><strong><Boxes/></strong><i/></div><div><small>Bayi ağı</small><strong><Network/></strong><i/></div><div><small>Performans</small><strong><BarChart3/></strong><i/></div></div><div className="corp-dash-chart"><span/><span/><span/><span/><span/><span/><span/><span/><span/></div><div className="corp-dash-foot"><span/> Tüm operasyonlar tek ekranda</div></div><div className="corp-floating corp-float-one"><Handshake/> İş ortaklığı ağı</div><div className="corp-floating corp-float-two"><CheckCircle2/> Merkezi yönetim</div></div>
           <a className="corp-scroll" href="#cozumler">Aşağı kaydır <ChevronDown size={16}/></a>
         </section>
         <section className="corp-intro" id="hakkimizda"><span className="corp-kicker">ENTEGRE BİR YAKLAŞIM</span><h2>İşinizi büyütürken<br/><em>kontrol sizde kalsın.</em></h2><p>Satış kanallarını, mağaza operasyonlarını ve iş ortaklığı süreçlerini daha düzenli yönetebilmeniz için geliştirilen Entegre Ultra, ticaretin farklı ihtiyaçlarını tek bir dijital deneyimde buluşturmayı amaçlar.</p></section>
+        <section className="corp-buybox" id="buybox">
+          <div className="corp-buybox-copy">
+            <span className="corp-kicker">ENTEGRE ULTRA'NIN ÖNE ÇIKAN GÜCÜ</span>
+            <h2>BUYBOX'INDA KAL.<br/><em>KÂRINI KORU.</em></h2>
+            <p>Fiyat rekabetini yalnızca en düşük fiyat olarak görmeyin. Rakiplerinizi takip edin, minimum kâr sınırınızı belirleyin ve fiyat kararlarınızı veriye dayalı yönetin.</p>
+            <div className="corp-buybox-actions"><a className="corp-primary" href="#cozumler">Buybox özelliklerini incele <ArrowRight size={17}/></a><span><ShieldCheck size={17}/> Kâr sınırı odaklı fiyat önerileri</span></div>
+            <div className="corp-buybox-points"><span><TrendingUp/> Rakip fiyat takibi</span><span><ShieldCheck/> Minimum kâr koruması</span><span><Trophy/> Buybox performans analizi</span></div>
+          </div>
+          <div className="corp-buybox-demo" aria-label="Örnek Buybox fiyat karşılaştırma paneli">
+            <div className="corp-buybox-demo-head"><span><i/> ÖRNEK BUYBOX PANELİ</span><b>CANLI VERİ DEĞİLDİR</b></div>
+            <div className="corp-buybox-status"><div><small>ÖRNEK DURUM</small><strong>Rekabet takibi</strong></div><span>● İzleme tasarımı</span></div>
+            <div className="corp-buybox-product"><div className="corp-product-thumb">EU</div><div><b>Örnek ürün</b><small>Ürün fiyat karşılaştırması</small></div><strong>₺849</strong></div>
+            <div className="corp-price-list"><div><span>Senin mağazan</span><b>₺849</b><i className="corp-price-tag">ÖRNEK</i></div><div><span>Rakip mağaza A</span><b>₺859</b></div><div><span>Rakip mağaza B</span><b>₺879</b></div></div>
+            <div className="corp-buybox-recommend"><span><small>ÖRNEK FİYAT ÖNERİSİ</small><strong>₺839</strong></span><span>Minimum kâr sınırı<br/><b>Koruma kuralı</b></span></div>
+            <p className="corp-demo-note">Bu alan tasarım örneğidir. Gerçek rakip fiyatları ve Buybox durumu, pazaryeri bağlantıları etkinleştirildiğinde gösterilir.</p>
+          </div>
+        </section>
         <section className="corp-solutions" id="cozumler"><div className="corp-section-heading"><div><span className="corp-kicker">PLATFORM YETENEKLERİ</span><h2>İşinizi destekleyen <em>çözümler</em></h2></div><p>İhtiyaç duyduğunuz yönetim araçları, tek bir platform yaklaşımıyla.</p></div><div className="corp-feature-grid">{features.map(({icon:Icon,title,text},i)=><article className="corp-feature" key={title}><span className="corp-feature-icon"><Icon/></span><small>0{i+1}</small><h3>{title}</h3><p>{text}</p></article>)}</div></section>
         <section className="corp-partner" id="bayilik"><div className="corp-partner-icon"><Building2/></div><div><span className="corp-kicker">İŞ ORTAKLIĞI PROGRAMI</span><h2>Entegre Ultra bayisi<br/><em>olmak ister misiniz?</em></h2><p>Bayi ağımıza katılın. Müşteri ve abonelik satışlarınızı yönetin, alt bayi yapınızı oluşturun, komisyon ve kazanç takibinizi tek panelden yapın.</p><button className="corp-primary" onClick={openApplication}>Bayi başvurusu yap <ArrowRight size={17}/></button></div><div className="corp-partner-points"><span><CheckCircle2/> Bayi ve alt bayi ağı</span><span><CheckCircle2/> Müşteri portföyü yönetimi</span><span><CheckCircle2/> Satış ve komisyon takibi</span></div></section>
         <section className="corp-bottom-cta"><span className="corp-kicker">ŞİMDİ TANIŞALIM</span><h2>Ticaretiniz için yeni bir başlangıç.</h2><p>Entegre Ultra hakkında bilgi alın veya bayi başvurunuzu hemen iletin.</p><button className="corp-primary" onClick={openApplication}>Bize katılın <ArrowRight size={17}/></button></section>
