@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK # rebuild with Supabase repository secrets
 
 on:
   workflow_dispatch:
