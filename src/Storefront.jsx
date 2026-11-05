@@ -15,7 +15,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export default function Storefront() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);\n  const [heroSlide, setHeroSlide] = useState(0);
   const [applicationOpen, setApplicationOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -88,10 +88,31 @@ export default function Storefront() {
       </div>
     </main> : <>
       <main>
-        <section className="corp-hero" id="anasayfa">
-          <div className="corp-hero-content"><span className="corp-kicker"><i/> TİCARETİNİZ İÇİN ENTEGRE ÇÖZÜM</span><h1>İşinizi tek merkezden <em>yönetin.</em></h1><p>Entegre Ultra; mağaza, ürün, pazaryeri ve bayi operasyonlarını bir araya getirme hedefiyle geliştirilen yeni nesil yönetim platformudur.</p><div className="corp-hero-actions"><a className="corp-primary" href="#buybox">Buybox sistemini keşfedin <ArrowRight size={17}/></a><button className="corp-secondary" onClick={openApplication}>Bayi ağımıza katılın</button></div><div className="corp-trust-line"><ShieldCheck size={17}/> İş süreçlerinizi tek noktadan takip etme yaklaşımı</div></div>
-          <div className="corp-hero-visual"><div className="corp-glow"/><div className="corp-dashboard-card"><div className="corp-dash-top"><span/><span/><span/><b>ENTEGRE ULTRA</b></div><div className="corp-dash-title">Yönetim merkezi</div><div className="corp-dash-stats"><div><small>Ürün yönetimi</small><strong><Boxes/></strong><i/></div><div><small>Bayi ağı</small><strong><Network/></strong><i/></div><div><small>Performans</small><strong><BarChart3/></strong><i/></div></div><div className="corp-dash-chart"><span/><span/><span/><span/><span/><span/><span/><span/><span/></div><div className="corp-dash-foot"><span/> Tüm operasyonlar tek ekranda</div></div><div className="corp-floating corp-float-one"><Handshake/> İş ortaklığı ağı</div><div className="corp-floating corp-float-two"><CheckCircle2/> Merkezi yönetim</div></div>
-          <a className="corp-scroll" href="#cozumler">Aşağı kaydır <ChevronDown size={16}/></a>
+        <section className="corp-slider" id="anasayfa">
+          <div className="corp-slider-track">
+            <div className="corp-slider-copy">
+              <span className="corp-kicker"><i/> {['XML DÖNÜŞTÜRME MERKEZİ','AKILLI BUYBOX YÖNETİMİ','ÇOKLU PAZARYERİ YÖNETİMİ'][heroSlide]}</span>
+              <h1>{[
+                <>Bir XML ile <em>tüm kanallara</em> hazırlanın.</>,
+                <>Buybox'ınızda kalın. <em>Kârınızı koruyun.</em></>,
+                <>Ticaretinizin tamamı <em>tek merkezde.</em></>
+              ][heroSlide]}</h1>
+              <p>{[
+                'Tedarikçi XML bağlantınızı ekleyin; ürün verilerinizi hedef pazaryerlerine uygun formata dönüştürün.',
+                'Rakip fiyatlarını takip edin, minimum kâr hedefinizi gözetin ve fiyat yönetiminizi tek merkezde toplayın.',
+                'Trendyol, Hepsiburada, Amazon, N11 ve Ozon operasyonlarınızı tek yönetim deneyiminde buluşturun.'
+              ][heroSlide]}</p>
+              <div className="corp-hero-actions"><a className="corp-primary" href={['#xml-donusum','#buybox','#pazaryerleri'][heroSlide]}>{['XML dönüşümünü keşfet','Buybox sistemini keşfet','Pazaryerlerini incele'][heroSlide]} <ArrowRight size={17}/></a><button className="corp-secondary" onClick={openApplication}>Bayi ağımıza katılın</button></div>
+              <div className="corp-trust-line"><ShieldCheck size={17}/> İş süreçlerinizi tek noktadan takip etme yaklaşımı</div>
+            </div>
+            <div className="corp-slider-visual"><div className="corp-slider-orbit orbit-one"/><div className="corp-slider-orbit orbit-two"/>
+              <div className="corp-slider-dashboard"><div className="corp-slider-dash-head"><span>EU</span><b>ENTEGRE ULTRA</b><i>●●●</i></div><small>YÖNETİM MERKEZİ</small><strong>{['TEK XML · ÇOKLU PAZARYERİ','FİYAT · REKABET · KÂR','TEK PANEL · ÇOKLU KANAL'][heroSlide]}</strong>
+                <div className="corp-slider-dash-grid">{[['XML aktarımı','Format eşleştirme','Dosya çıktısı'],['Rakip takibi','Kâr sınırı','Performans analizi'],['Ürün ve stok','Sipariş yönetimi','Kanal takibi']][heroSlide].map((item,i)=><div key={item}><span>0{i+1}</span><b>{item}</b><i/></div>)}</div>
+                <div className="corp-slider-dash-bottom"><span/><b>Tek merkezden yönetim deneyimi</b></div>
+              </div><div className="corp-slider-float"><CheckCircle2/> Entegre yönetim yaklaşımı</div>
+            </div>
+          </div>
+          <div className="corp-slider-controls"><div className="corp-slider-arrows"><button aria-label="Önceki slayt" onClick={() => setHeroSlide(i => (i+2)%3)}>‹</button><button aria-label="Sonraki slayt" onClick={() => setHeroSlide(i => (i+1)%3)}>›</button></div><div className="corp-slider-dots">{[0,1,2].map(i=><button key={i} className={i===heroSlide?'active':''} aria-label={`Slayt ${i+1}`} onClick={() => setHeroSlide(i)}/>)}</div><span className="corp-slider-count">0{heroSlide+1} <i>/</i> 03</span></div>
         </section>
         <section className="corp-xml" id="xml-donusum">
           <div className="corp-xml-copy">
