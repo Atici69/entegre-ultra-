@@ -2,16 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard,
   Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
-  Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList
+  Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList, Target, Megaphone, Network
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Genel Bakış', icon: LayoutDashboard },
   { label: 'Ürünler', icon: Package },
   { label: 'Siparişler', icon: ShoppingCart },
+  { label: 'Buybox', icon: Target },
   { label: 'Pazaryerleri', icon: Store },
+  { label: 'Reklamlar', icon: Megaphone },
   { label: 'Müşteriler', icon: Users },
   { label: 'Abonelik', icon: CreditCard },
+  { label: 'Bayi Yönetimi', icon: Network },
   { label: 'Ayarlar', icon: Settings }
 ];
 
@@ -30,6 +33,15 @@ function App() {
   const [productForm, setProductForm] = useState({ name: '', sku: '', price: '', stock: '' });
   const [customerForm, setCustomerForm] = useState({ name: '', phone: '', email: '' });
   const [formError, setFormError] = useState('');
+  const [buyboxMode, setBuyboxMode] = useState(() => localStorage.getItem('eu_buybox_mode') || 'manual');
+  const [minimumPrice, setMinimumPrice] = useState(() => localStorage.getItem('eu_buybox_min') || '');
+  const [bannerTitle, setBannerTitle] = useState('');
+  const [bannerSlot, setBannerSlot] = useState('Ana sayfa üst banner');
+  const [banners, setBanners] = useState(() => readLocal('eu_banners'));
+  useEffect(() => { localStorage.setItem('eu_banners', JSON.stringify(banners)); }, [banners]);
+  useEffect(() => { localStorage.setItem('eu_buybox_mode', buyboxMode); }, [buyboxMode]);
+  useEffect(() => { localStorage.setItem('eu_buybox_min', minimumPrice); }, [minimumPrice]);
+  const addBanner = (e) => { e.preventDefault(); if (!bannerTitle.trim()) return; setBanners(prev => [{ id: Date.now(), title: bannerTitle.trim(), slot: bannerSlot, active: true }, ...prev]); setBannerTitle(''); };
 
   useEffect(() => { localStorage.setItem('eu_products', JSON.stringify(products)); }, [products]);
   useEffect(() => { localStorage.setItem('eu_customers', JSON.stringify(customers)); }, [customers]);
@@ -75,7 +87,10 @@ function App() {
     'Siparişler': 'Sipariş kayıtları ve durum takibi sonraki geliştirme aşamasında açılacak.',
     'Pazaryerleri': 'Pazaryeri bağlantıları için resmi API erişimleri ve mağaza yetkilendirmeleri gereklidir.',
     'Abonelik': 'Paket ve ödeme altyapısı henüz sunucuya bağlı değildir.',
-    'Ayarlar': 'Hesap, işletme ve güvenlik ayarları sonraki aşamada eklenecek.'
+    'Ayarlar': 'Hesap, işletme ve güvenlik ayarları sonraki aşamada eklenecek.',
+    'Bayi Yönetimi': 'Bayi, alt bayi, müşteri portföyü ve komisyon takibi için yönetim alanı.',
+    'Buybox': 'Buybox analiz ve fiyatlandırma tercihlerinizi yönetin.',
+    'Reklamlar': 'Banner alanlarını ve sponsorlu ürün kampanyalarını yönetin.'
   };
 
   return <div className="app-shell">
@@ -151,6 +166,31 @@ function App() {
             </tbody></table></div>}
         </div>}
 
+        {active === 'Buybox' && <div className="buybox-layout">
+          <div className="panel-card">
+            <div className="panel-title"><div><h2>Fiyatlandırma tercihi</h2><p>Her mağaza kendi çalışma şeklini seçebilir</p></div><Target size={20}/></div>
+            <div className="mode-grid">
+              <button className={buyboxMode === 'manual' ? 'mode-card selected' : 'mode-card'} onClick={() => setBuyboxMode('manual')}><strong>Manuel / Öneri</strong><span>Rakip fiyatlarını incele, öneriyi gör ve fiyatı kendin güncelle.</span></button>
+              <button className={buyboxMode === 'auto' ? 'mode-card selected' : 'mode-card'} onClick={() => setBuyboxMode('auto')}><strong>Otomatik fiyatlandırma</strong><span>Belirlediğin kurallara göre fiyat güncelleme modunu seç.</span></button>
+            </div>
+            <label className="field-label">Minimum satış fiyatı (TL)<input className="wide-input" type="number" min="0" step="0.01" value={minimumPrice} onChange={e => setMinimumPrice(e.target.value)} placeholder="Kâr sınırını korumak için alt limit"/></label>
+            <div className="notice-box">{buyboxMode === 'auto' ? 'Otomatik mod seçildi. Gerçek fiyat güncellemesi için pazaryeri API bağlantısı ve açık kullanıcı onayı gerekir.' : 'Manuel mod seçildi. Fiyat önerileri kullanıcı onayı olmadan uygulanmaz.'}</div>
+          </div>
+          <div className="panel-card"><div className="panel-title"><div><h2>Buybox performansı</h2><p>API bağlantısı bekleniyor</p></div><TrendingUp size={20}/></div><div className="empty-state compact"><div className="empty-icon"><Target size={26}/></div><h2>Henüz veri yok</h2><p>Rakip fiyatı ve Buybox kazanma verileri pazaryeri bağlantısı yapıldığında görüntülenecek.</p></div></div>
+        </div>}
+
+        {active === 'Reklamlar' && <div className="panel-card data-panel">
+          <div className="panel-title"><div><h2>Reklam ve banner alanları</h2><p>Mağaza vitrinindeki tanıtım yerlerini yönetin</p></div><Megaphone size={20}/></div>
+          <form className="banner-form" onSubmit={addBanner}>
+            <label className="field-label">Banner / kampanya adı<input className="wide-input" value={bannerTitle} onChange={e => setBannerTitle(e.target.value)} placeholder="Örn. Kasım fırsatları" required/></label>
+            <label className="field-label">Gösterim alanı<select className="wide-input" value={bannerSlot} onChange={e => setBannerSlot(e.target.value)}><option>Ana sayfa üst banner</option><option>Ana sayfa alt banner</option><option>Kategori bannerı</option><option>Ürün detay sponsor alanı</option><option>Mobil vitrin bannerı</option></select></label>
+            <button className="primary-button" type="submit"><Plus size={17}/> Banner alanı oluştur</button>
+          </form>
+          <div className="section-heading banner-heading"><div><h2>Tanımlı reklam alanları</h2><p>{banners.length} kampanya kaydı</p></div></div>
+          {banners.length === 0 ? <div className="empty-state compact"><div className="empty-icon"><Megaphone size={26}/></div><h2>Henüz banner yok</h2><p>İlk reklam alanını yukarıdan oluşturun.</p></div> : <div className="banner-list">{banners.map(b => <div className="banner-row" key={b.id}><span className="banner-symbol"><Megaphone size={18}/></span><div><strong>{b.title}</strong><small>{b.slot}</small></div><button className="delete-button" onClick={() => setBanners(prev => prev.filter(x => x.id !== b.id))} aria-label="Banner kaydını sil"><Trash2 size={16}/></button></div>)}</div>}
+          <p className="muted-note">Bu sürüm reklam alanı kayıtlarını cihazda tutar. Görsel yayınlama, zamanlama, gösterim ve tıklama ölçümü sonraki sunucu entegrasyonunda etkinleştirilecektir.</p>
+        </div>}
+
         {active === 'Müşteriler' && <div className="panel-card data-panel">
           <div className="panel-title"><div><h2>Müşteri listesi</h2><p>{customers.length} müşteri kayıtlı</p></div><Users size={20}/></div>
           {filteredCustomers.length === 0 ? <div className="empty-state compact"><div className="empty-icon"><Users size={26}/></div><h2>{customers.length ? 'Sonuç bulunamadı' : 'Henüz müşteri yok'}</h2><p>{customers.length ? 'Arama kelimenizi değiştirin.' : 'İlk müşteri kaydınızı oluşturun.'}</p><button className="secondary-button" onClick={openAdd}>Müşteri ekle</button></div> :
@@ -159,7 +199,7 @@ function App() {
             </tbody></table></div>}
         </div>}
 
-        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
+        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
       </section>
       <footer>© 2026 Entegre Ultra <span>İlk sürüm · Geliştirme aşamasında</span></footer>
     </main>
