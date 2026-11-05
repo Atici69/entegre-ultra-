@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import Storefront from './Storefront.jsx';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard,
   Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
-  Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList, Target, Megaphone, Network
+  Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList, Target, Megaphone, Network, Home
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Genel Bakış', icon: LayoutDashboard },
+  { label: 'Mağaza Vitrini', icon: Home },
   { label: 'Ürünler', icon: Package },
   { label: 'Siparişler', icon: ShoppingCart },
   { label: 'Buybox', icon: Target },
@@ -129,6 +131,8 @@ function App() {
             <p className="subheading">Entegre Ultra'ya hoş geldiniz. İşletmenizi tek panelden yönetin.</p></div>
           {(active === 'Ürünler' || active === 'Müşteriler') && <button className="primary-button" onClick={openAdd}><Plus size={18}/> Yeni kayıt</button>}
         </div>
+
+        {active === 'Mağaza Vitrini' && <Storefront />}
 
         {active === 'Genel Bakış' && <>
           <div className="trial-banner">
