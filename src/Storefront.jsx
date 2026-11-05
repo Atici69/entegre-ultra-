@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { ChevronLeft, ChevronRight, Search, ShoppingCart, Store, ShieldCheck, Truck, Headphones, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const slides = [
@@ -8,20 +9,26 @@ const slides = [
 ];
 const categories = [['Elektronik','⌁'],['Ev & Yaşam','⌂'],['Moda','◇'],['Kozmetik','✿'],['Spor','◎'],['Kitap & Hobi','▤']];
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
 export default function Storefront() {
   const [slide,setSlide]=useState(0);
   const [applicationOpen,setApplicationOpen]=useState(false);
   const [submitted,setSubmitted]=useState(false);
+  const [submitting,setSubmitting]=useState(false);
+  const [submitError,setSubmitError]=useState('');
   const [form,setForm]=useState({name:'',company:'',phone:'',email:'',city:'',message:''});
   const current=slides[slide];
   const change=(step)=>setSlide((slide+step+slides.length)%slides.length);
-  const openApplication=()=>{setSubmitted(false);setApplicationOpen(true);};
-  const submitApplication=(e)=>{e.preventDefault();const items=JSON.parse(localStorage.getItem('eu_dealer_applications')||'[]');items.unshift({...form,id:Date.now(),createdAt:new Date().toISOString()});localStorage.setItem('eu_dealer_applications',JSON.stringify(items));setSubmitted(true);};
+  const openApplication=()=>{setSubmitted(false);setSubmitError('');setApplicationOpen(true);};
+  const submitApplication=async(e)=>{e.preventDefault();setSubmitError('');if(!supabase){setSubmitError('Başvuru sistemi henüz yapılandırılmadı. Lütfen daha sonra tekrar deneyin.');return;}setSubmitting(true);try{const {error}=await supabase.from('dealer_applications').insert([{name:form.name.trim(),company:form.company.trim()||null,phone:form.phone.trim(),email:form.email.trim()||null,city:form.city.trim()||null,message:form.message.trim()||null,status:'pending'}]);if(error)throw error;setSubmitted(true);setForm({name:'',company:'',phone:'',email:'',city:'',message:''});}catch(error){console.error('Bayi başvurusu gönderilemedi:',error);setSubmitError('Başvurunuz gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.');}finally{setSubmitting(false);}};
   if(applicationOpen) return <div className="storefront dealer-page">
     <div className="dealer-top"><button className="dealer-back" onClick={()=>setApplicationOpen(false)}><ChevronLeft size={18}/> Mağazaya dön</button><div className="shop-brand"><span className="shop-logo">EU</span><strong>Entegre <b>Ultra</b></strong></div></div>
     <section className="dealer-hero"><span>ENTEGRE ULTRA İŞ ORTAKLIĞI</span><h2>Gücümüze güç katın.<br/><b>Bayimiz olun!</b></h2><p>Entegre Ultra bayi ağına katılın; müşterilere ulaşın, işinizi büyütün ve birlikte kazanalım.</p><div className="dealer-perks"><span>✦ Genişleyen iş ağı</span><span>✦ Bayi ve alt bayi yönetimi</span><span>✦ Satış ve komisyon takibi</span></div></section>
     <section className="dealer-form-wrap"><div className="dealer-form-intro"><small>BAYİLİK BAŞVURUSU</small><h2>Başvuru formu</h2><p>Bilgilerinizi bırakın, ekibimiz başvurunuzu değerlendirmek üzere sizinle iletişime geçsin.</p></div>
-      {submitted ? <div className="dealer-success"><CheckCircle2 size={42}/><h3>Başvurunuz bu cihazda kaydedildi.</h3><p>Bu prototipte bilgiler sunucuya gönderilmiyor. Gerçek başvuru alımı için güvenli sunucu bağlantısı kurulması gerekiyor.</p><button className="dealer-submit" onClick={()=>setApplicationOpen(false)}>Mağazaya dön</button></div> :
+      {submitted ? <div className="dealer-success"><CheckCircle2 size={42}/><h3>Başvurunuz alındı!</h3><p>Başvurunuz Entegre Ultra başvuru sistemine başarıyla iletildi. Değerlendirme sürecinde sizinle iletişime geçilecektir.</p><button className="dealer-submit" onClick={()=>setApplicationOpen(false)}>Mağazaya dön</button></div> :
       <form className="dealer-form" onSubmit={submitApplication}>
         <label>Ad soyad *<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Adınız ve soyadınız"/></label>
         <label>Firma / işletme adı<input value={form.company} onChange={e=>setForm({...form,company:e.target.value})} placeholder="Firma adınız"/></label>
@@ -29,7 +36,7 @@ export default function Storefront() {
         <label>E-posta adresi<input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="ornek@firma.com"/></label>
         <label>İl / şehir<input value={form.city} onChange={e=>setForm({...form,city:e.target.value})} placeholder="Bulunduğunuz şehir"/></label>
         <label>Başvurunuz hakkında<textarea rows="4" value={form.message} onChange={e=>setForm({...form,message:e.target.value})} placeholder="Kısaca kendinizden ve iş planınızdan bahsedin"/></label>
-        <button className="dealer-submit" type="submit">Başvuruyu gönder <ArrowRight size={17}/></button><small className="dealer-privacy">Bilgileriniz yalnızca başvurunun değerlendirilmesi amacıyla kullanılmalıdır. Canlı başvuru için gizlilik metni ve sunucu altyapısı eklenecektir.</small>
+        {submitError && <p className="form-error" role="alert">{submitError}</p>}<button className="dealer-submit" type="submit" disabled={submitting}>{submitting?'Gönderiliyor...':'Başvuruyu gönder'} <ArrowRight size={17}/></button><small className="dealer-privacy">Bilgileriniz yalnızca başvurunun değerlendirilmesi amacıyla kullanılmalıdır. Canlı başvuru için gizlilik metni ve sunucu altyapısı eklenecektir.</small>
       </form>}
     </section><footer className="shop-footer"><strong>Entegre <b>Ultra</b></strong><small>© 2026 Entegre Ultra</small></footer>
   </div>;
