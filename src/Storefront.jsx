@@ -15,7 +15,8 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export default function Storefront() {
-  const [menuOpen, setMenuOpen] = useState(false);\n  const [heroSlide, setHeroSlide] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [heroSlide, setHeroSlide] = useState(0);
   const [applicationOpen, setApplicationOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
