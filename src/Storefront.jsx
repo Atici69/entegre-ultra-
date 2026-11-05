@@ -60,7 +60,7 @@ export default function Storefront() {
       <a className="corp-brand" href="#anasayfa" aria-label="Entegre Ultra ana sayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
-        <a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
+        <a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
         <a href="#hakkimizda" onClick={() => setMenuOpen(false)}>Hakkımızda</a>
         <a href="#bayilik" onClick={() => setMenuOpen(false)}>Bayilik</a>
         <button onClick={openApplication}>Bayi başvurusu <ArrowRight size={16}/></button>
@@ -94,6 +94,19 @@ export default function Storefront() {
           <a className="corp-scroll" href="#cozumler">Aşağı kaydır <ChevronDown size={16}/></a>
         </section>
         <section className="corp-intro" id="hakkimizda"><span className="corp-kicker">ENTEGRE BİR YAKLAŞIM</span><h2>İşinizi büyütürken<br/><em>kontrol sizde kalsın.</em></h2><p>Satış kanallarını, mağaza operasyonlarını ve iş ortaklığı süreçlerini daha düzenli yönetebilmeniz için geliştirilen Entegre Ultra, ticaretin farklı ihtiyaçlarını tek bir dijital deneyimde buluşturmayı amaçlar.</p></section>
+        <section className="corp-marketplaces" id="pazaryerleri">
+          <div className="corp-marketplaces-heading"><span className="corp-kicker">ÇOKLU SATIŞ KANALI YÖNETİMİ</span><h2>Satış kanallarınız <em>tek merkezde.</em></h2><p>Türkiye'deki ve global pazaryerlerindeki operasyonlarınızı tek panelden yönetme hedefi.</p></div>
+          <div className="corp-marketplace-grid">
+            <article className="corp-marketplace-card trendyol"><strong>trendyol</strong><span>Trendyol</span></article>
+            <article className="corp-marketplace-card hepsi"><strong>hepsiburada</strong><span>Hepsiburada</span></article>
+            <article className="corp-marketplace-card amazon"><strong>amazon</strong><span>Amazon</span></article>
+            <article className="corp-marketplace-card pazarama"><strong>pazarama</strong><span>Pazarama</span></article>
+            <article className="corp-marketplace-card ozon"><strong>OZON</strong><span>Ozon</span></article>
+            <article className="corp-marketplace-card n11"><strong>n11</strong><span>n11</span></article>
+          </div>
+          <div className="corp-marketplace-bottom"><span><CheckCircle2/> Ürün ve katalog aktarımı</span><span><CheckCircle2/> Stok ve sipariş senkronizasyonu</span><span><CheckCircle2/> Fiyat ve Buybox takibi</span><span><CheckCircle2/> Tek panelden operasyon</span></div>
+          <p className="corp-marketplace-disclaimer">Bu logolar hedeflenen pazaryeri bağlantılarını gösterir. Her kanalın canlı kullanımı, ilgili platformun API erişimi, teknik koşulları ve yetkilendirmeleri tamamlandığında etkinleştirilecektir.</p>
+        </section>
         <section className="corp-buybox" id="buybox">
           <div className="corp-buybox-copy">
             <span className="corp-kicker">ENTEGRE ULTRA'NIN ÖNE ÇIKAN GÜCÜ</span>
