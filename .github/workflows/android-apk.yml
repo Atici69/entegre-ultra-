@@ -38,6 +38,13 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      # Keep the Android debug signing key stable so new APKs can update the installed app.
+      - name: Restore stable Android debug signing key
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: entegre-ultra-android-debug-signing-key-v1
+
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
 
