@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import Storefront from './Storefront.jsx';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard,
@@ -20,6 +21,10 @@ const navItems = [
   { label: 'Ayarlar', icon: Settings }
 ];
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = supabaseUrl && supabaseKey && /^https:\/\//i.test(supabaseUrl) ? createClient(supabaseUrl, supabaseKey) : null;
+
 const readLocal = (key) => {
   try { return JSON.parse(localStorage.getItem(key) || '[]'); }
   catch { return []; }
@@ -40,6 +45,13 @@ function App() {
   const [bannerTitle, setBannerTitle] = useState('');
   const [bannerSlot, setBannerSlot] = useState('Ana sayfa üst banner');
   const [banners, setBanners] = useState(() => readLocal('eu_banners'));
+  const [dealerSession, setDealerSession] = useState(null);
+  const [dealerEmail, setDealerEmail] = useState('');
+  const [dealerPassword, setDealerPassword] = useState('');
+  const [dealerRows, setDealerRows] = useState([]);
+  const [dealerBusy, setDealerBusy] = useState(false);
+  const [dealerError, setDealerError] = useState('');
+  const [dealerNotice, setDealerNotice] = useState('');
   useEffect(() => { localStorage.setItem('eu_banners', JSON.stringify(banners)); }, [banners]);
   useEffect(() => { localStorage.setItem('eu_buybox_mode', buyboxMode); }, [buyboxMode]);
   useEffect(() => { localStorage.setItem('eu_buybox_min', minimumPrice); }, [minimumPrice]);
@@ -72,6 +84,11 @@ function App() {
     setFormError('');
     setShowAdd(false);
   };
+
+  const signInDealerAdmin = async (e) => { e.preventDefault(); setDealerError(''); setDealerNotice(''); if (!supabase) { setDealerError('Supabase ayarları bulunamadı. GitHub Actions secrets içindeki VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY değerlerini kontrol edin.'); return; } setDealerBusy(true); try { const { data, error } = await supabase.auth.signInWithPassword({ email: dealerEmail.trim(), password: dealerPassword }); if (error) throw error; const role = data.user?.app_metadata?.role; if (role !== 'admin') { await supabase.auth.signOut(); throw new Error('Bu hesap bayi başvurularını görüntüleme yetkisine sahip değil. Supabase kullanıcı app_metadata alanında role=admin olmalı.'); } setDealerSession(data.session); await loadDealerApplications(); } catch (err) { setDealerError(err.message || 'Yönetici girişi başarısız.'); } finally { setDealerBusy(false); } };
+  const loadDealerApplications = async () => { if (!supabase) return; setDealerBusy(true); setDealerError(''); try { const { data, error } = await supabase.from('dealer_applications').select('id,name,company,phone,email,city,message,status,created_at').order('created_at', { ascending: false }); if (error) throw error; setDealerRows(data || []); } catch (err) { setDealerError(err.message || 'Başvurular yüklenemedi.'); } finally { setDealerBusy(false); } };
+  const updateDealerStatus = async (id, status) => { if (!supabase) return; setDealerError(''); try { const { error } = await supabase.from('dealer_applications').update({ status }).eq('id', id); if (error) throw error; setDealerRows(rows => rows.map(row => row.id === id ? { ...row, status } : row)); setDealerNotice('Başvuru durumu güncellendi.'); } catch (err) { setDealerError(err.message || 'Durum güncellenemedi.'); } };
+  const signOutDealerAdmin = async () => { if (supabase) await supabase.auth.signOut(); setDealerSession(null); setDealerRows([]); setDealerPassword(''); setDealerNotice(''); setDealerError(''); };
 
   const openAdd = () => {
     setFormError('');
@@ -133,6 +150,22 @@ function App() {
         </div>
 
         {active === 'Mağaza Vitrini' && <Storefront />}
+
+        {active === 'Bayi Yönetimi' && <div className="panel-card data-panel">
+          <div className="panel-title"><div><h2>Bayi başvuruları</h2><p>Mağaza vitrini üzerinden gönderilen başvurular</p></div><Network size={20}/></div>
+          {!dealerSession ? <form className="entry-form" onSubmit={signInDealerAdmin}>
+            <p>Başvuruları görüntülemek için yönetici hesabınızla giriş yapın.</p>
+            <label>Yönetici e-posta<input type="email" autoComplete="username" required value={dealerEmail} onChange={e => setDealerEmail(e.target.value)} placeholder="yonetici@ornek.com" /></label>
+            <label>Şifre<input type="password" autoComplete="current-password" required value={dealerPassword} onChange={e => setDealerPassword(e.target.value)} placeholder="Supabase yönetici şifresi" /></label>
+            {dealerError && <p className="form-error" role="alert">{dealerError}</p>}
+            <button className="primary-button form-submit" type="submit" disabled={dealerBusy}>{dealerBusy ? 'Giriş yapılıyor...' : 'Yönetici girişi'}</button>
+            <p className="muted-note">Güvenlik için başvurular yalnızca Supabase app_metadata alanında role=admin yetkisi bulunan hesaplara açılır.</p>
+          </form> : <>
+            <div className="section-heading"><div><h2>Başvuru listesi</h2><p>{dealerRows.length} kayıt</p></div><div className="button-row"><button className="secondary-button" onClick={loadDealerApplications} disabled={dealerBusy}>Yenile</button><button className="secondary-button" onClick={signOutDealerAdmin}>Çıkış yap</button></div></div>
+            {dealerError && <p className="form-error" role="alert">{dealerError}</p>}{dealerNotice && <p className="notice-box" role="status">{dealerNotice}</p>}
+            {dealerBusy ? <p>Başvurular yükleniyor...</p> : dealerRows.length === 0 ? <div className="empty-state compact"><div className="empty-icon"><ClipboardList size={26}/></div><h2>Henüz başvuru yok</h2><p>Yeni başvurular bu alanda listelenecek.</p></div> : <div className="table-wrap"><table className="data-table"><thead><tr><th>Başvuru</th><th>İletişim</th><th>Şehir</th><th>Tarih</th><th>Durum</th></tr></thead><tbody>{dealerRows.map(row => <tr key={row.id}><td><strong>{row.name}</strong><br/><small>{row.company || 'Firma belirtilmedi'}</small>{row.message && <p>{row.message}</p>}</td><td>{row.phone}<br/><small>{row.email || 'E-posta yok'}</small></td><td>{row.city || '—'}</td><td>{new Date(row.created_at).toLocaleString('tr-TR')}</td><td><select className="wide-input" value={row.status} onChange={e => updateDealerStatus(row.id, e.target.value)}><option value="pending">Beklemede</option><option value="approved">Onaylandı</option><option value="rejected">Reddedildi</option></select></td></tr>)}</tbody></table></div>}
+          </>}
+        </div>}
 
         {active === 'Genel Bakış' && <>
           <div className="trial-banner">
@@ -203,7 +236,7 @@ function App() {
             </tbody></table></div>}
         </div>}
 
-        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
+        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
       </section>
       <footer>© 2026 Entegre Ultra <span>İlk sürüm · Geliştirme aşamasında</span></footer>
     </main>
