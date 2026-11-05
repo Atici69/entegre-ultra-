@@ -1,0 +1,6 @@
+{
+  "appId": "com.entegreultra.app",
+  "appName": "Entegre Ultra",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
