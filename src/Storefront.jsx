@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, BarChart3, Boxes, Building2, CheckCircle2, ChevronDown, Handshake, Layers3, Menu, Network, ShieldCheck, Store, TrendingUp, Trophy, X, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BarChart3, Boxes, Building2, CheckCircle2, ChevronDown, Download, FileCode2, Globe2, Handshake, Layers3, Menu, Network, RefreshCw, ShieldCheck, Store, TrendingUp, Trophy, X, Zap } from 'lucide-react';
 
 const features = [
   { icon: Trophy, title: 'Akıllı Buybox yönetimi', text: 'Rakip fiyatlarını izleyin, kâr sınırınızı koruyun ve Buybox performansınızı tek merkezden yönetin.' },
@@ -60,7 +60,7 @@ export default function Storefront() {
       <a className="corp-brand" href="#anasayfa" aria-label="Entegre Ultra ana sayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
-        <a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
+        <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
         <a href="#hakkimizda" onClick={() => setMenuOpen(false)}>Hakkımızda</a>
         <a href="#bayilik" onClick={() => setMenuOpen(false)}>Bayilik</a>
         <button onClick={openApplication}>Bayi başvurusu <ArrowRight size={16}/></button>
@@ -92,6 +92,33 @@ export default function Storefront() {
           <div className="corp-hero-content"><span className="corp-kicker"><i/> TİCARETİNİZ İÇİN ENTEGRE ÇÖZÜM</span><h1>İşinizi tek merkezden <em>yönetin.</em></h1><p>Entegre Ultra; mağaza, ürün, pazaryeri ve bayi operasyonlarını bir araya getirme hedefiyle geliştirilen yeni nesil yönetim platformudur.</p><div className="corp-hero-actions"><a className="corp-primary" href="#buybox">Buybox sistemini keşfedin <ArrowRight size={17}/></a><button className="corp-secondary" onClick={openApplication}>Bayi ağımıza katılın</button></div><div className="corp-trust-line"><ShieldCheck size={17}/> İş süreçlerinizi tek noktadan takip etme yaklaşımı</div></div>
           <div className="corp-hero-visual"><div className="corp-glow"/><div className="corp-dashboard-card"><div className="corp-dash-top"><span/><span/><span/><b>ENTEGRE ULTRA</b></div><div className="corp-dash-title">Yönetim merkezi</div><div className="corp-dash-stats"><div><small>Ürün yönetimi</small><strong><Boxes/></strong><i/></div><div><small>Bayi ağı</small><strong><Network/></strong><i/></div><div><small>Performans</small><strong><BarChart3/></strong><i/></div></div><div className="corp-dash-chart"><span/><span/><span/><span/><span/><span/><span/><span/><span/></div><div className="corp-dash-foot"><span/> Tüm operasyonlar tek ekranda</div></div><div className="corp-floating corp-float-one"><Handshake/> İş ortaklığı ağı</div><div className="corp-floating corp-float-two"><CheckCircle2/> Merkezi yönetim</div></div>
           <a className="corp-scroll" href="#cozumler">Aşağı kaydır <ChevronDown size={16}/></a>
+        </section>
+        <section className="corp-xml" id="xml-donusum">
+          <div className="corp-xml-copy">
+            <span className="corp-kicker">ENTEGRE ULTRA'NIN YENİ NESİL ÇÖZÜMÜ</span>
+            <div className="corp-xml-eyebrow"><FileCode2 size={15}/> XML DÖNÜŞTÜRME MERKEZİ</div>
+            <h2>Bir tedarikçi XML'i.<br/><em>İstediğiniz satış kanalına hazır.</em></h2>
+            <p>Tedarikçinizin XML bağlantısını ekleyin. Ürün verilerini tek yerde toplayın, hedef pazaryerinin alanlarına göre eşleştirin ve aktarım için hazırlayın.</p>
+            <div className="corp-xml-benefits">
+              <span><CheckCircle2/> Ürün, fiyat, stok ve görsel alanlarını eşleştirme</span>
+              <span><CheckCircle2/> Pazaryerine özel çıktı ve dosya hazırlama</span>
+              <span><CheckCircle2/> XML veya web sitesi aktarım seçeneği</span>
+            </div>
+            <a className="corp-primary" href="#bayilik">Bu çözümü keşfedin <ArrowRight size={17}/></a>
+            <small className="corp-xml-note">Pazaryerine doğrudan yayınlama, ilgili platformun API erişimi ve mağaza yetkilendirmesine bağlıdır.</small>
+          </div>
+          <div className="corp-xml-visual">
+            <div className="corp-xml-panel">
+              <div className="corp-xml-panel-head"><span><i/> XML DÖNÜŞTÜRME AKIŞI</span><b>ÖRNEK EKRAN</b></div>
+              <div className="corp-xml-source"><span className="corp-xml-file"><FileCode2/></span><div><b>Tedarikçi XML bağlantısı</b><small>XML kaynağını sisteme ekle</small></div><CheckCircle2/></div>
+              <div className="corp-xml-flow"><span/><small>ÜRÜN VERİLERİNİ EŞLEŞTİR</small><span/></div>
+              <div className="corp-xml-target-title">HEDEF KANALI SEÇ</div>
+              <div className="corp-xml-targets"><span className="xml-trendyol">trendyol</span><span className="xml-hepsi">hepsiburada</span><span className="xml-amazon">amazon</span><span className="xml-n11">n11</span><span className="xml-ozon">OZON</span></div>
+              <div className="corp-xml-output"><div><RefreshCw/><span><b>Hedef formata dönüştür</b><small>Alan eşleştirme · kontrol · çıktı</small></span></div><ArrowUpRight/></div>
+              <div className="corp-xml-choices"><span><Download/> XML / dosya olarak al</span><span><Globe2/> Web sitesine aktar</span></div>
+            </div>
+            <div className="corp-xml-float"><CheckCircle2/> Tek kaynak, çoklu kanal</div>
+          </div>
         </section>
         <section className="corp-mobile-first" id="mobil">
           <div className="corp-mobile-copy"><span className="corp-kicker">MOBİL ÖNCELİKLİ DENEYİM</span><h2>Entegre Ultra <em>cebinizde.</em></h2><p>Ürünlerinizi, stoklarınızı, siparişlerinizi ve bayi ağınızı telefonunuzdan kolayca takip edebilmeniz için mobil kullanım öncelikli bir deneyim hedefliyoruz. İhtiyaç duyduğunuzda bilgisayarınızdan da erişebilirsiniz.</p><div className="corp-mobile-points"><span><CheckCircle2/> Telefonda kolay kullanım</span><span><CheckCircle2/> Hızlı erişim ve sade ekranlar</span><span><CheckCircle2/> Mobil ve web uyumu</span></div></div>
