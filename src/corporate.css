@@ -48,3 +48,21 @@
 .corp-demo-note{font-size:8px;line-height:1.6;color:#9fb2c7;margin:13px 2px 0}
 @media(max-width:850px){.corp-buybox{padding:65px 28px;gap:30px}.corp-buybox-points{gap:12px}}
 @media(max-width:650px){.corp-buybox{grid-template-columns:1fr;padding:60px 20px;gap:30px}.corp-buybox-copy h2{font-size:43px}.corp-buybox-demo{transform:none;padding:16px}.corp-buybox-actions{align-items:flex-start;flex-direction:column}.corp-buybox-points{display:grid;grid-template-columns:1fr 1fr}}
+
+/* Marketplace ecosystem showcase */
+.corp-marketplaces{padding:78px max(5vw,calc((100vw - 1180px)/2));background:#fff;text-align:center;border-top:1px solid #edf0f4;border-bottom:1px solid #edf0f4}
+.corp-marketplaces-heading h2{margin:13px 0 10px;color:var(--navy);font-size:clamp(30px,4vw,46px);letter-spacing:-1.8px}
+.corp-marketplaces-heading h2 em{font-style:normal;color:var(--orange)}
+.corp-marketplaces-heading p{margin:0 auto;color:#718096;font-size:13px;line-height:1.8;max-width:620px}
+.corp-marketplace-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:13px;margin:34px 0 25px}
+.corp-marketplace-card{min-height:112px;border:1px solid #e9edf2;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:linear-gradient(150deg,#fff,#f8fafc);box-shadow:0 7px 22px #152b4208;transition:transform .2s,border-color .2s}
+.corp-marketplace-card:hover{transform:translateY(-4px);border-color:#f0a04a}
+.corp-marketplace-card strong{font-size:clamp(15px,1.7vw,22px);font-weight:900;letter-spacing:-.8px;color:#263b53}
+.corp-marketplace-card span{font-size:10px;color:#718096;font-weight:700}
+.corp-marketplace-card.trendyol strong{color:#f27a1a}.corp-marketplace-card.hepsi strong{color:#f28a18}.corp-marketplace-card.amazon strong{color:#192b40}.corp-marketplace-card.pazarama strong{color:#5738a5}.corp-marketplace-card.ozon strong{color:#0759b5}.corp-marketplace-card.n11 strong{color:#8c287d}
+.corp-marketplace-bottom{display:flex;justify-content:center;flex-wrap:wrap;gap:11px 22px}
+.corp-marketplace-bottom span{display:flex;align-items:center;gap:6px;color:#3d536b;font-size:10px;font-weight:750}
+.corp-marketplace-bottom svg{width:15px;color:#24976d}
+.corp-marketplace-disclaimer{max-width:800px;margin:22px auto 0;color:#8793a1;font-size:9px;line-height:1.7}
+@media(max-width:850px){.corp-marketplace-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.corp-marketplaces{padding:65px 28px}}
+@media(max-width:500px){.corp-marketplace-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.corp-marketplace-card{min-height:98px}.corp-marketplace-bottom{display:grid;grid-template-columns:1fr 1fr;text-align:left}.corp-marketplaces{padding:55px 18px}}
