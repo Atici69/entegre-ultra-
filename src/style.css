@@ -20,3 +20,21 @@ footer{border-top:1px solid #e9edf3;padding:17px 38px;color:#9ba5b3;font-size:9p
 /* Functional product and customer screens */
 .data-panel{margin-top:8px;min-height:300px}.table-wrap{overflow-x:auto;margin-top:18px}.data-table{width:100%;border-collapse:collapse;text-align:left;font-size:11px}.data-table th{font-size:9px;letter-spacing:.5px;color:#8995a7;font-weight:700;background:#f8f9fb;padding:12px 10px}.data-table td{padding:13px 10px;border-bottom:1px solid #eef1f5;color:#43516a}.data-table tr:last-child td{border-bottom:0}.delete-button{border:0;background:#fff1f0;color:#c65b54;width:30px;height:30px;border-radius:7px;display:grid;place-items:center}.delete-button:hover{background:#ffe2df}.empty-state.compact{border:0;padding:45px 12px;margin:10px 0 0}.entry-form{display:grid;gap:12px;margin-top:17px}.entry-form label{display:grid;gap:6px;font-size:10px;font-weight:700;color:#53627a}.entry-form input{width:100%;height:39px;border:1px solid #dfe5ed;border-radius:7px;padding:0 10px;outline:0;font-size:11px;color:#26364f}.entry-form input:focus{border-color:#8198b8;box-shadow:0 0 0 3px #eaf0f8}.form-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-submit{justify-content:center;width:100%;margin-top:3px}.form-error{font-size:10px;color:#bf4545;margin:0}
 @media(max-width:480px){.data-table{min-width:510px}.form-two{grid-template-columns:1fr}}
+
+/* Buybox and advertising management */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.mode-card{border:1px solid #e1e7ef;background:#fff;border-radius:10px;padding:16px;text-align:left;display:grid;gap:8px;color:#52627a}
+.mode-card strong{font-size:12px;color:#253650}.mode-card span{font-size:10px;line-height:1.6;color:#8491a4}
+.mode-card.selected{border-color:#355985;background:#f2f6fc;box-shadow:0 0 0 2px #e4edf8}
+.field-label{display:grid;gap:7px;font-size:10px;font-weight:700;color:#53627a;margin-top:15px}
+.wide-input{width:100%;height:40px;border:1px solid #dfe5ed;border-radius:7px;padding:0 11px;background:#fff;color:#26364f;font:inherit;font-size:11px}
+.wide-input:focus{outline:0;border-color:#8198b8;box-shadow:0 0 0 3px #eaf0f8}
+.notice-box{margin-top:15px;padding:12px;border-radius:8px;background:#f3f6fa;color:#64748b;font-size:10px;line-height:1.6}
+.buybox-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+.banner-form{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-top:20px;padding-bottom:18px;border-bottom:1px solid #edf0f4}
+.banner-form .field-label{margin:0}.banner-form .primary-button{height:40px;white-space:nowrap}
+.banner-heading{margin-top:22px}
+.banner-list{display:grid;gap:8px}.banner-row{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #edf0f4;border-radius:9px}
+.banner-symbol{width:34px;height:34px;border-radius:9px;background:#eef3fa;color:#536b8d;display:grid;place-items:center}
+.banner-row>div{display:grid;gap:4px;flex:1}.banner-row strong{font-size:11px;color:#34445e}.banner-row small,.muted-note{font-size:9px;color:#929eaf}.muted-note{line-height:1.6;margin-top:18px}
+@media(max-width:760px){.buybox-layout{grid-template-columns:1fr}.banner-form{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}}
