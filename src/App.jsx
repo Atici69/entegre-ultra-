@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Storefront from './Storefront.jsx';
+import XMLCenter from './XMLCenter.jsx';
 import {
-  LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard,
+  LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard, FileCode2,
   Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
   Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList, Target, Megaphone, Network, Home
 } from 'lucide-react';
@@ -10,6 +11,7 @@ import {
 const navItems = [
   { label: 'Genel Bakış', icon: LayoutDashboard },
   { label: 'Mağaza Vitrini', icon: Home },
+  { label: 'XML Dönüştürme', icon: FileCode2 },
   { label: 'Ürünler', icon: Package },
   { label: 'Siparişler', icon: ShoppingCart },
   { label: 'Buybox', icon: Target },
@@ -150,6 +152,7 @@ function App() {
         </div>
 
         {active === 'Mağaza Vitrini' && <Storefront />}
+        {active === 'XML Dönüştürme' && <XMLCenter />}
 
         {active === 'Bayi Yönetimi' && <div className="panel-card data-panel">
           <div className="panel-title"><div><h2>Bayi başvuruları</h2><p>Mağaza vitrini üzerinden gönderilen başvurular</p></div><Network size={20}/></div>
@@ -236,7 +239,7 @@ function App() {
             </tbody></table></div>}
         </div>}
 
-        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
+        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && active !== 'XML Dönüştürme' && active !== 'Mağaza Vitrini' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
       </section>
       <footer>© 2026 Entegre Ultra <span>İlk sürüm · Geliştirme aşamasında</span></footer>
     </main>
