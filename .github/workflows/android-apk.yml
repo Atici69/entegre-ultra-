@@ -38,12 +38,48 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Keep the Android debug signing key stable so new APKs can update the installed app.
+      # Restore the same debug signing key on every build.
       - name: Restore stable Android debug signing key
         uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
           key: entegre-ultra-android-debug-signing-key-v1
+
+      # The cache action saves this file after the job. Create it explicitly on the first run.
+      - name: Create stable Android debug signing key when missing
+        run: |
+          mkdir -p "$HOME/.android"
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkeypair -v \
+              -keystore "$HOME/.android/debug.keystore" \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      # Give every APK a higher versionCode so Android recognizes it as an update.
+      - name: Set Android version code
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          python3 - <<'PY'
+          import os, re, pathlib
+          path = pathlib.Path("android/app/build.gradle")
+          source = path.read_text()
+          updated, count = re.subn(
+              r'(?m)^(\\s*versionCode\\s+)\\d+\\s*$',
+              lambda match: match.group(1) + os.environ["BUILD_NUMBER"],
+              source,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit("versionCode satırı bulunamadı; APK güvenli biçimde derlenmedi.")
+          path.write_text(updated)
+          PY
 
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
