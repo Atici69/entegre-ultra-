@@ -169,24 +169,6 @@ export default function Storefront() {
           <div className="corp-marketplace-bottom"><span><CheckCircle2/> Ürün ve katalog aktarımı</span><span><CheckCircle2/> Stok ve sipariş senkronizasyonu</span><span><CheckCircle2/> Fiyat ve Buybox takibi</span><span><CheckCircle2/> Tek panelden operasyon</span></div>
           <p className="corp-marketplace-disclaimer">Bu logolar hedeflenen pazaryeri bağlantılarını gösterir. Her kanalın canlı kullanımı, ilgili platformun API erişimi, teknik koşulları ve yetkilendirmeleri tamamlandığında etkinleştirilecektir.</p>
         </section>
-        <section className="corp-buybox" id="buybox">
-          <div className="corp-buybox-copy">
-            <span className="corp-kicker">ENTEGRE ULTRA'NIN ÖNE ÇIKAN GÜCÜ</span>
-            <h2>BUYBOX'INDA KAL.<br/><em>KÂRINI KORU.</em></h2>
-            <p>Fiyat rekabetini yalnızca en düşük fiyat olarak görmeyin. Rakiplerinizi takip edin, minimum kâr sınırınızı belirleyin ve fiyat kararlarınızı veriye dayalı yönetin.</p>
-            <div className="corp-buybox-actions"><a className="corp-primary" href="#cozumler">Buybox özelliklerini incele <ArrowRight size={17}/></a><span><ShieldCheck size={17}/> Kâr sınırı odaklı fiyat önerileri</span></div>
-            <div className="corp-buybox-points"><span><TrendingUp/> Rakip fiyat takibi</span><span><ShieldCheck/> Minimum kâr koruması</span><span><Trophy/> Buybox performans analizi</span></div>
-          </div>
-          <div className="corp-buybox-demo" aria-label="Örnek Buybox fiyat karşılaştırma paneli">
-            <div className="corp-buybox-demo-head"><span><i/> ÖRNEK BUYBOX PANELİ</span><b>CANLI VERİ DEĞİLDİR</b></div>
-            <div className="corp-buybox-status"><div><small>ÖRNEK DURUM</small><strong>Rekabet takibi</strong></div><span>● İzleme tasarımı</span></div>
-            <div className="corp-buybox-product"><div className="corp-product-thumb">EU</div><div><b>Örnek ürün</b><small>Ürün fiyat karşılaştırması</small></div><strong>₺849</strong></div>
-            <div className="corp-price-list"><div><span>Senin mağazan</span><b>₺849</b><i className="corp-price-tag">ÖRNEK</i></div><div><span>Rakip mağaza A</span><b>₺859</b></div><div><span>Rakip mağaza B</span><b>₺879</b></div></div>
-            <div className="corp-buybox-recommend"><span><small>ÖRNEK FİYAT ÖNERİSİ</small><strong>₺839</strong></span><span>Minimum kâr sınırı<br/><b>Koruma kuralı</b></span></div>
-            <p className="corp-demo-note">Bu alan tasarım örneğidir. Gerçek rakip fiyatları ve Buybox durumu, pazaryeri bağlantıları etkinleştirildiğinde gösterilir.</p>
-          </div>
-        </section>
-        <section className="corp-solutions" id="cozumler"><div className="corp-section-heading"><div><span className="corp-kicker">PLATFORM YETENEKLERİ</span><h2>İşinizi destekleyen <em>çözümler</em></h2></div><p>İhtiyaç duyduğunuz yönetim araçları, tek bir platform yaklaşımıyla.</p></div><div className="corp-feature-grid">{features.map(({icon:Icon,title,text},i)=><article className="corp-feature" key={title}><span className="corp-feature-icon"><Icon/></span><small>0{i+1}</small><h3>{title}</h3><p>{text}</p></article>)}</div></section>
         <section className="corp-pricing" id="paketler">
           <div className="corp-pricing-heading">
             <span className="corp-kicker">ENTEGRE ULTRA FİYATLANDIRMA</span>
@@ -221,6 +203,24 @@ export default function Storefront() {
           </div>
           <div className="corp-pricing-note"><strong>Pazaryeri bağlantısı:</strong> Her bir pazaryeri için aylık 799 TL + KDV. İhtiyacınız olan kanalları seçin. E-fatura hizmeti sunulmaz. Kartla tahsilat, iyzico hesabı bağlandıktan sonra etkinleştirilecektir.</div>
         </section>
+        <section className="corp-buybox" id="buybox">
+          <div className="corp-buybox-copy">
+            <span className="corp-kicker">ENTEGRE ULTRA'NIN ÖNE ÇIKAN GÜCÜ</span>
+            <h2>BUYBOX'INDA KAL.<br/><em>KÂRINI KORU.</em></h2>
+            <p>Fiyat rekabetini yalnızca en düşük fiyat olarak görmeyin. Rakiplerinizi takip edin, minimum kâr sınırınızı belirleyin ve fiyat kararlarınızı veriye dayalı yönetin.</p>
+            <div className="corp-buybox-actions"><a className="corp-primary" href="#cozumler">Buybox özelliklerini incele <ArrowRight size={17}/></a><span><ShieldCheck size={17}/> Kâr sınırı odaklı fiyat önerileri</span></div>
+            <div className="corp-buybox-points"><span><TrendingUp/> Rakip fiyat takibi</span><span><ShieldCheck/> Minimum kâr koruması</span><span><Trophy/> Buybox performans analizi</span></div>
+          </div>
+          <div className="corp-buybox-demo" aria-label="Örnek Buybox fiyat karşılaştırma paneli">
+            <div className="corp-buybox-demo-head"><span><i/> ÖRNEK BUYBOX PANELİ</span><b>CANLI VERİ DEĞİLDİR</b></div>
+            <div className="corp-buybox-status"><div><small>ÖRNEK DURUM</small><strong>Rekabet takibi</strong></div><span>● İzleme tasarımı</span></div>
+            <div className="corp-buybox-product"><div className="corp-product-thumb">EU</div><div><b>Örnek ürün</b><small>Ürün fiyat karşılaştırması</small></div><strong>₺849</strong></div>
+            <div className="corp-price-list"><div><span>Senin mağazan</span><b>₺849</b><i className="corp-price-tag">ÖRNEK</i></div><div><span>Rakip mağaza A</span><b>₺859</b></div><div><span>Rakip mağaza B</span><b>₺879</b></div></div>
+            <div className="corp-buybox-recommend"><span><small>ÖRNEK FİYAT ÖNERİSİ</small><strong>₺839</strong></span><span>Minimum kâr sınırı<br/><b>Koruma kuralı</b></span></div>
+            <p className="corp-demo-note">Bu alan tasarım örneğidir. Gerçek rakip fiyatları ve Buybox durumu, pazaryeri bağlantıları etkinleştirildiğinde gösterilir.</p>
+          </div>
+        </section>
+        <section className="corp-solutions" id="cozumler"><div className="corp-section-heading"><div><span className="corp-kicker">PLATFORM YETENEKLERİ</span><h2>İşinizi destekleyen <em>çözümler</em></h2></div><p>İhtiyaç duyduğunuz yönetim araçları, tek bir platform yaklaşımıyla.</p></div><div className="corp-feature-grid">{features.map(({icon:Icon,title,text},i)=><article className="corp-feature" key={title}><span className="corp-feature-icon"><Icon/></span><small>0{i+1}</small><h3>{title}</h3><p>{text}</p></article>)}</div></section>
         <section className="corp-partner" id="bayilik"><div className="corp-partner-icon"><Building2/></div><div><span className="corp-kicker">İŞ ORTAKLIĞI PROGRAMI</span><h2>Entegre Ultra bayisi<br/><em>olmak ister misiniz?</em></h2><p>Bayi ağımıza katılın. Müşteri ve abonelik satışlarınızı yönetin, alt bayi yapınızı oluşturun, komisyon ve kazanç takibinizi tek panelden yapın.</p><button className="corp-primary" onClick={openApplication}>Bayi başvurusu yap <ArrowRight size={17}/></button></div><div className="corp-partner-points"><span><CheckCircle2/> Bayi ve alt bayi ağı</span><span><CheckCircle2/> Müşteri portföyü yönetimi</span><span><CheckCircle2/> Satış ve komisyon takibi</span></div></section>
         <section className="corp-bottom-cta"><span className="corp-kicker">ŞİMDİ TANIŞALIM</span><h2>Ticaretiniz için yeni bir başlangıç.</h2><p>Entegre Ultra hakkında bilgi alın veya bayi başvurunuzu hemen iletin.</p><button className="corp-primary" onClick={openApplication}>Bize katılın <ArrowRight size={17}/></button></section>
       </main>
