@@ -61,26 +61,22 @@ jobs:
               -dname "CN=Android Debug,O=Android,C=US"
           fi
 
-      # Give every APK a higher versionCode so Android recognizes it as an update.
+      # Give every APK a higher versionCode when the generated Gradle file exposes one.
       - name: Set Android version code
         env:
           BUILD_NUMBER: ${{ github.run_number }}
         run: |
           python3 - <<'PY'
           import os, re, pathlib
-          path = pathlib.Path("android/app/build.gradle")
+          path = pathlib.Path('android/app/build.gradle')
           source = path.read_text()
-          updated, count = re.subn(
-              r'(?m)^(\\s*versionCode\\s+)\\d+\\s*$',
-              lambda match: match.group(1) + os.environ["BUILD_NUMBER"],
-              source,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit("versionCode satırı bulunamadı; APK güvenli biçimde derlenmedi.")
-          path.write_text(updated)
+          pattern = r'(?m)^(\s*versionCode\s*=?\s*)\d+.*$'
+          updated, count = re.subn(pattern, lambda m: m.group(1) + os.environ['BUILD_NUMBER'], source, count=1)
+          if count:
+              path.write_text(updated)
+          else:
+              print('versionCode not declared in generated Gradle file; using Capacitor default.')
           PY
-
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
 
