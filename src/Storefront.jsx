@@ -18,6 +18,7 @@ export default function Storefront() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [heroSlide, setHeroSlide] = useState(0);
   const [applicationOpen, setApplicationOpen] = useState(false);
+  const [pricingOpen, setPricingOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -27,6 +28,7 @@ export default function Storefront() {
     setSubmitted(false);
     setSubmitError('');
     setApplicationOpen(true);
+    setPricingOpen(false);
     setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -61,7 +63,7 @@ export default function Storefront() {
       <a className="corp-brand" href="#anasayfa" aria-label="Entegre Ultra ana sayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
-        <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a><a href="#paketler" onClick={() => setMenuOpen(false)}>Paketler</a>
+        <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a><a href="#paketler" onClick={(e) => { e.preventDefault(); setPricingOpen(true); setApplicationOpen(false); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Paketler</a>
         <a href="#hakkimizda" onClick={() => setMenuOpen(false)}>Hakkımızda</a>
         <a href="#bayilik" onClick={() => setMenuOpen(false)}>Bayilik</a>
         <button onClick={openApplication}>Bayi başvurusu <ArrowRight size={16}/></button>
@@ -87,6 +89,42 @@ export default function Storefront() {
           </form>}
         </section>
       </div>
+    </main> : pricingOpen ? <main className="corp-pricing-page">
+      <button className="corp-back" onClick={() => { setPricingOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>← Ana sayfaya dön</button>
+              <section className="corp-pricing" id="paketler">
+          <div className="corp-pricing-heading">
+            <span className="corp-kicker">ENTEGRE ULTRA FİYATLANDIRMA</span>
+            <h2>İşinize uygun paketi <em>seçin.</em></h2>
+            <p>Şeffaf fiyatlandırma. E-fatura modülü paketlere dahil değildir.</p>
+          </div>
+          <div className="corp-pricing-grid">
+            <article className="corp-plan-card">
+              <span className="corp-plan-label">İLK ADIM</span><h3>Ultra Başlangıç</h3>
+              <div className="corp-plan-price">900 TL <small>/ ay + KDV</small></div>
+              <p>Entegre Ultra ile çalışmaya başlamak isteyen işletmeler için.</p>
+              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
+            </article>
+            <article className="corp-plan-card corp-plan-featured">
+              <span className="corp-plan-label">GELİŞEN İŞLETMELER</span><h3>Ultra Profesyonel</h3>
+              <div className="corp-plan-price">1.875 TL <small>/ ay + KDV</small></div>
+              <p>Birden fazla satış kanalını yönetmek isteyen işletmeler için.</p>
+              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
+            </article>
+            <article className="corp-plan-card">
+              <span className="corp-plan-label">BÜYÜYEN OPERASYONLAR</span><h3>Ultra İşletme</h3>
+              <div className="corp-plan-price">3.000 TL <small>/ ay + KDV</small></div>
+              <p>Daha kapsamlı operasyonlar için paket seçeneği.</p>
+              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
+            </article>
+            <article className="corp-plan-card">
+              <span className="corp-plan-label">ÖZEL ÇÖZÜM</span><h3>Ultra Kurumsal</h3>
+              <div className="corp-plan-price">Özel fiyat</div>
+              <p>Kurumsal ihtiyaçlara göre tekliflendirme.</p>
+              <button className="corp-primary" onClick={openApplication}>Teklif al <ArrowRight size={16}/></button>
+            </article>
+          </div>
+          <div className="corp-pricing-note"><strong>Pazaryeri bağlantısı:</strong> Her bir pazaryeri için aylık 799 TL + KDV. İhtiyacınız olan kanalları seçin. E-fatura hizmeti sunulmaz. Kartla tahsilat, iyzico hesabı bağlandıktan sonra etkinleştirilecektir.</div>
+        </section>
     </main> : <>
       <main>
         <section className="corp-slider" id="anasayfa">
@@ -168,40 +206,6 @@ export default function Storefront() {
           </div>
           <div className="corp-marketplace-bottom"><span><CheckCircle2/> Ürün ve katalog aktarımı</span><span><CheckCircle2/> Stok ve sipariş senkronizasyonu</span><span><CheckCircle2/> Fiyat ve Buybox takibi</span><span><CheckCircle2/> Tek panelden operasyon</span></div>
           <p className="corp-marketplace-disclaimer">Bu logolar hedeflenen pazaryeri bağlantılarını gösterir. Her kanalın canlı kullanımı, ilgili platformun API erişimi, teknik koşulları ve yetkilendirmeleri tamamlandığında etkinleştirilecektir.</p>
-        </section>
-        <section className="corp-pricing" id="paketler">
-          <div className="corp-pricing-heading">
-            <span className="corp-kicker">ENTEGRE ULTRA FİYATLANDIRMA</span>
-            <h2>İşinize uygun paketi <em>seçin.</em></h2>
-            <p>Şeffaf fiyatlandırma. E-fatura modülü paketlere dahil değildir.</p>
-          </div>
-          <div className="corp-pricing-grid">
-            <article className="corp-plan-card">
-              <span className="corp-plan-label">İLK ADIM</span><h3>Ultra Başlangıç</h3>
-              <div className="corp-plan-price">900 TL <small>/ ay + KDV</small></div>
-              <p>Entegre Ultra ile çalışmaya başlamak isteyen işletmeler için.</p>
-              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
-            </article>
-            <article className="corp-plan-card corp-plan-featured">
-              <span className="corp-plan-label">GELİŞEN İŞLETMELER</span><h3>Ultra Profesyonel</h3>
-              <div className="corp-plan-price">1.875 TL <small>/ ay + KDV</small></div>
-              <p>Birden fazla satış kanalını yönetmek isteyen işletmeler için.</p>
-              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
-            </article>
-            <article className="corp-plan-card">
-              <span className="corp-plan-label">BÜYÜYEN OPERASYONLAR</span><h3>Ultra İşletme</h3>
-              <div className="corp-plan-price">3.000 TL <small>/ ay + KDV</small></div>
-              <p>Daha kapsamlı operasyonlar için paket seçeneği.</p>
-              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
-            </article>
-            <article className="corp-plan-card">
-              <span className="corp-plan-label">ÖZEL ÇÖZÜM</span><h3>Ultra Kurumsal</h3>
-              <div className="corp-plan-price">Özel fiyat</div>
-              <p>Kurumsal ihtiyaçlara göre tekliflendirme.</p>
-              <button className="corp-primary" onClick={openApplication}>Teklif al <ArrowRight size={16}/></button>
-            </article>
-          </div>
-          <div className="corp-pricing-note"><strong>Pazaryeri bağlantısı:</strong> Her bir pazaryeri için aylık 799 TL + KDV. İhtiyacınız olan kanalları seçin. E-fatura hizmeti sunulmaz. Kartla tahsilat, iyzico hesabı bağlandıktan sonra etkinleştirilecektir.</div>
         </section>
         <section className="corp-buybox" id="buybox">
           <div className="corp-buybox-copy">
