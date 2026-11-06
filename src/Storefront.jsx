@@ -61,7 +61,7 @@ export default function Storefront() {
       <a className="corp-brand" href="#anasayfa" aria-label="Entegre Ultra ana sayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
-        <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a>
+        <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a><a href="#paketler" onClick={() => setMenuOpen(false)}>Paketler</a>
         <a href="#hakkimizda" onClick={() => setMenuOpen(false)}>Hakkımızda</a>
         <a href="#bayilik" onClick={() => setMenuOpen(false)}>Bayilik</a>
         <button onClick={openApplication}>Bayi başvurusu <ArrowRight size={16}/></button>
@@ -187,6 +187,40 @@ export default function Storefront() {
           </div>
         </section>
         <section className="corp-solutions" id="cozumler"><div className="corp-section-heading"><div><span className="corp-kicker">PLATFORM YETENEKLERİ</span><h2>İşinizi destekleyen <em>çözümler</em></h2></div><p>İhtiyaç duyduğunuz yönetim araçları, tek bir platform yaklaşımıyla.</p></div><div className="corp-feature-grid">{features.map(({icon:Icon,title,text},i)=><article className="corp-feature" key={title}><span className="corp-feature-icon"><Icon/></span><small>0{i+1}</small><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+        <section className="corp-pricing" id="paketler">
+          <div className="corp-pricing-heading">
+            <span className="corp-kicker">ENTEGRE ULTRA FİYATLANDIRMA</span>
+            <h2>İşinize uygun paketi <em>seçin.</em></h2>
+            <p>Şeffaf fiyatlandırma. E-fatura modülü paketlere dahil değildir.</p>
+          </div>
+          <div className="corp-pricing-grid">
+            <article className="corp-plan-card">
+              <span className="corp-plan-label">İLK ADIM</span><h3>Ultra Başlangıç</h3>
+              <div className="corp-plan-price">900 TL <small>/ ay + KDV</small></div>
+              <p>Entegre Ultra ile çalışmaya başlamak isteyen işletmeler için.</p>
+              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
+            </article>
+            <article className="corp-plan-card corp-plan-featured">
+              <span className="corp-plan-label">GELİŞEN İŞLETMELER</span><h3>Ultra Profesyonel</h3>
+              <div className="corp-plan-price">1.875 TL <small>/ ay + KDV</small></div>
+              <p>Birden fazla satış kanalını yönetmek isteyen işletmeler için.</p>
+              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
+            </article>
+            <article className="corp-plan-card">
+              <span className="corp-plan-label">BÜYÜYEN OPERASYONLAR</span><h3>Ultra İşletme</h3>
+              <div className="corp-plan-price">3.000 TL <small>/ ay + KDV</small></div>
+              <p>Daha kapsamlı operasyonlar için paket seçeneği.</p>
+              <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
+            </article>
+            <article className="corp-plan-card">
+              <span className="corp-plan-label">ÖZEL ÇÖZÜM</span><h3>Ultra Kurumsal</h3>
+              <div className="corp-plan-price">Özel fiyat</div>
+              <p>Kurumsal ihtiyaçlara göre tekliflendirme.</p>
+              <button className="corp-primary" onClick={openApplication}>Teklif al <ArrowRight size={16}/></button>
+            </article>
+          </div>
+          <div className="corp-pricing-note"><strong>Pazaryeri bağlantısı:</strong> Her bir pazaryeri için aylık 799 TL + KDV. İhtiyacınız olan kanalları seçin. E-fatura hizmeti sunulmaz. Kartla tahsilat, iyzico hesabı bağlandıktan sonra etkinleştirilecektir.</div>
+        </section>
         <section className="corp-partner" id="bayilik"><div className="corp-partner-icon"><Building2/></div><div><span className="corp-kicker">İŞ ORTAKLIĞI PROGRAMI</span><h2>Entegre Ultra bayisi<br/><em>olmak ister misiniz?</em></h2><p>Bayi ağımıza katılın. Müşteri ve abonelik satışlarınızı yönetin, alt bayi yapınızı oluşturun, komisyon ve kazanç takibinizi tek panelden yapın.</p><button className="corp-primary" onClick={openApplication}>Bayi başvurusu yap <ArrowRight size={17}/></button></div><div className="corp-partner-points"><span><CheckCircle2/> Bayi ve alt bayi ağı</span><span><CheckCircle2/> Müşteri portföyü yönetimi</span><span><CheckCircle2/> Satış ve komisyon takibi</span></div></section>
         <section className="corp-bottom-cta"><span className="corp-kicker">ŞİMDİ TANIŞALIM</span><h2>Ticaretiniz için yeni bir başlangıç.</h2><p>Entegre Ultra hakkında bilgi alın veya bayi başvurunuzu hemen iletin.</p><button className="corp-primary" onClick={openApplication}>Bize katılın <ArrowRight size={17}/></button></section>
       </main>
