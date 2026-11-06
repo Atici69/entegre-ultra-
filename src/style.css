@@ -69,3 +69,25 @@ footer{border-top:1px solid #e9edf3;padding:17px 38px;color:#9ba5b3;font-size:9p
 .dealer-hero{padding:38px 34px;background:radial-gradient(circle at 85% 20%,#3d72b4 0,transparent 34%),linear-gradient(120deg,#102c50,#1c5590);color:#fff}.dealer-hero>span,.dealer-form-intro small{font-size:9px;letter-spacing:1.8px;font-weight:800;color:#ffc66a}.dealer-hero h2{font-size:clamp(27px,4vw,42px);line-height:1.1;letter-spacing:-1.5px;margin:13px 0}.dealer-hero h2 b{color:#ffb13c}.dealer-hero p{max-width:560px;color:#d3e2f2;font-size:12px;line-height:1.8}.dealer-perks{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.dealer-perks span{border:1px solid #ffffff35;background:#ffffff12;border-radius:30px;padding:9px 12px;font-size:9px;color:#fff}
 .dealer-form-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:28px;padding:30px 28px}.dealer-form-intro h2{font-size:24px;color:#1c2c45;margin:9px 0}.dealer-form-intro p{font-size:11px;line-height:1.7;color:#7c899c}.dealer-form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.dealer-form label{display:grid;gap:6px;font-size:10px;font-weight:700;color:#53627a}.dealer-form label:nth-last-of-type(1){grid-column:1/-1}.dealer-form input,.dealer-form textarea{width:100%;border:1px solid #dfe5ed;border-radius:8px;padding:11px;background:#fff;font:inherit;font-size:11px;color:#26364f;outline:0}.dealer-form input:focus,.dealer-form textarea:focus{border-color:#7d9cc2;box-shadow:0 0 0 3px #eaf1fa}.dealer-submit{grid-column:1/-1;border:0;border-radius:9px;background:linear-gradient(100deg,#ff9b22,#f16b19);color:#fff;padding:13px 16px;display:flex;justify-content:center;align-items:center;gap:10px;font-size:11px;font-weight:800}.dealer-privacy{grid-column:1/-1;color:#98a3b2;font-size:9px;line-height:1.6}.dealer-success{grid-column:1/-1;text-align:center;padding:25px;color:#268b65}.dealer-success h3{color:#263b53}.dealer-success p{font-size:11px;line-height:1.7;color:#7c899c;max-width:480px;margin:0 auto 15px}.dealer-success .dealer-submit{max-width:220px;margin:0 auto}
 @media(max-width:700px){.dealer-form-wrap{grid-template-columns:1fr;padding:23px 16px;gap:16px}.dealer-hero{padding:29px 20px}.dealer-form{grid-template-columns:1fr}.dealer-form label:nth-last-of-type(1){grid-column:auto}.dealer-form .dealer-submit,.dealer-form .dealer-privacy{grid-column:auto}.dealer-top{padding:12px}.seller-banner{align-items:flex-start}.seller-banner>svg{flex:none}}
+
+
+/* XML conversion center */
+.xml-center{display:grid;gap:16px}
+.xml-intro{display:flex;align-items:center;gap:16px;padding:22px}
+.xml-intro h2{font-size:19px;margin:5px 0;color:#1c2940}
+.xml-intro p{font-size:11px;color:#8390a3;margin:0;line-height:1.6}
+.xml-icon{width:48px;height:48px;flex:none;border-radius:13px;background:#fff2df;color:#db8427;display:grid;place-items:center}
+.xml-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.xml-upload{width:100%;min-height:100px;border:1px dashed #cbd5e1;background:#f8fafc;border-radius:10px;display:grid;justify-items:center;align-content:center;gap:6px;color:#526783;margin-top:17px}
+.xml-upload b{font-size:11px}.xml-upload small{font-size:9px;color:#96a2b2}
+.xml-textarea{width:100%;min-height:180px;resize:vertical;border:1px solid #dfe5ed;border-radius:8px;padding:11px;font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#334155}
+.xml-textarea:focus{outline:0;border-color:#8198b8;box-shadow:0 0 0 3px #eaf0f8}
+.xml-parse{width:100%;justify-content:center;margin-top:12px}
+.xml-map-title{font-size:9px;font-weight:800;letter-spacing:1px;color:#8290a3;margin:23px 0 9px}
+.xml-map-row{display:grid;grid-template-columns:.8fr 1.2fr;align-items:center;gap:10px;margin:9px 0;font-size:10px;color:#53627a}
+.xml-map-row .wide-input{height:34px}
+.xml-export{width:100%;justify-content:center;margin-top:17px}
+.xml-alert{display:flex;align-items:flex-start;gap:9px;border-radius:8px;padding:12px 14px;font-size:10px;line-height:1.6}
+.xml-alert.error{background:#fff1f0;color:#b54742}.xml-alert.success{background:#edf8f2;color:#287c59}
+.xml-results{min-width:0}
+@media(max-width:760px){.xml-grid{grid-template-columns:1fr}.xml-intro{align-items:flex-start;padding:17px}.xml-map-row{grid-template-columns:.7fr 1.3fr}}
