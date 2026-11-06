@@ -33,7 +33,7 @@ const readLocal = (key) => {
 };
 
 function App() {
-  const [active, setActive] = useState('Genel Bakış');
+  const [active, setActive] = useState('Mağaza Vitrini');
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
