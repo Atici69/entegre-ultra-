@@ -46,7 +46,6 @@ export default function XMLCenter() {
   const [marketplace,setMarketplace] = useState('Trendyol');
   const [error,setError] = useState('');
   const [notice,setNotice] = useState('');
-  const [sourceUrl,setSourceUrl] = useState('');
   const fileRef = useRef(null);
   const [mapping,setMapping] = useState({ name:'name',sku:'sku',barcode:'barcode',price:'price',stock:'stock',image:'image',description:'description' });
   const parse = (text) => {
