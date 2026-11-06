@@ -5,12 +5,13 @@ const FIELD_ALIASES = {
   name: ['name','title','productname','product_name','urunadi','urun_adi','baslik'],
   sku: ['sku','stockcode','stock_code','model','productcode','product_code','stok_kodu','kod'],
   barcode: ['barcode','gtin','ean','barkod'],
+  category: ['category','categoryname','category_name','kategori','kategor adi','urun_kategorisi'],
   price: ['price','saleprice','sale_price','listprice','amount','fiyat','satisfiyati'],
   stock: ['stock','quantity','qty','inventory','stok','adet','miktar'],
   image: ['image','imageurl','image_url','picture','img','gorsel','resim'],
   description: ['description','shortdescription','details','aciklama','urunaciklama']
 };
-const LABELS = { name:'Ürün adı', sku:'Stok kodu', barcode:'Barkod', price:'Fiyat', stock:'Stok', image:'Görsel URL', description:'Açıklama' };
+const LABELS = { name:'Ürün adı', sku:'Stok kodu', barcode:'Barkod', category:'Kategori', price:'Fiyat', stock:'Stok', image:'Görsel URL', description:'Açıklama' };
 const MARKETPLACES = ['Trendyol','Hepsiburada','N11','Amazon','OZON'];
 const normalize = (s='') => String(s).toLocaleLowerCase('tr').replace(/[^a-z0-9_]/g,'');
 const csvCell = value => '"' + String(value ?? '').replace(/"/g,'""') + '"';
@@ -19,22 +20,24 @@ function parseProducts(xmlText) {
   const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
   const parseError = doc.querySelector('parsererror');
   if (parseError) throw new Error('XML dosyası okunamadı. XML biçimini kontrol edin.');
-  const candidates = [...doc.getElementsByTagName('*')].filter(el =>
-    el.children.length > 0 && [...el.children].some(child => ['name','title','productname','urunadi','urun_adi'].includes(normalize(child.localName)))
-  );
-  const rows = candidates.filter(el => !candidates.some(parent => parent !== el && parent.contains(el) && candidates.includes(parent)));
-  const productNodes = rows.length ? rows : [...doc.getElementsByTagName('*')].filter(el => {
+  const productNodes = [...doc.getElementsByTagName('*')].filter(el => {
     const keys = [...el.children].map(child => normalize(child.localName));
-    return keys.some(k => FIELD_ALIASES.name.includes(k)) && keys.some(k => FIELD_ALIASES.price.includes(k));
-  });
-  if (!productNodes.length) throw new Error('Ürün kayıtları bulunamadı. XML içinde ürün adı ve fiyat alanları aranıyor.');
+    const hasName = keys.some(k => FIELD_ALIASES.name.includes(k));
+    const hasIdentifier = keys.some(k => FIELD_ALIASES.sku.includes(k) || FIELD_ALIASES.barcode.includes(k));
+    const hasCommerceData = keys.some(k => FIELD_ALIASES.price.includes(k) || FIELD_ALIASES.stock.includes(k));
+    return el.children.length > 0 && (hasName || (hasIdentifier && hasCommerceData));
+  }).filter(el => ![...el.parentElement?.getElementsByTagName('*') || []].some(parent =>
+    parent !== el && [...parent.children].some(child => child === el) &&
+    [...parent.children].some(child => FIELD_ALIASES.sku.includes(normalize(child.localName)) || FIELD_ALIASES.name.includes(normalize(child.localName)))
+  ));
+  if (!productNodes.length) throw new Error('Ürün kayıtları bulunamadı. Ürün adı veya stok kodu/barkod ile fiyat/stok alanları aranıyor.');
   return productNodes.slice(0,10000).map((node,index) => {
     const values = {};
     for (const field of Object.keys(FIELD_ALIASES)) {
       const child = [...node.children].find(el => FIELD_ALIASES[field].includes(normalize(el.localName)));
       values[field] = child ? (field === 'image' ? (child.textContent.trim() || child.getAttribute('url') || '') : child.textContent.trim()) : '';
     }
-    if (!values.name) values.name = node.getAttribute('name') || 'Ürün ' + (index+1);
+    if (!values.name) values.name = values.sku || values.barcode || 'Ürün ' + (index+1);
     return { id:index+1, ...values };
   }).filter(row => row.name || row.sku || row.barcode);
 }
@@ -47,7 +50,7 @@ export default function XMLCenter() {
   const [error,setError] = useState('');
   const [notice,setNotice] = useState('');
   const fileRef = useRef(null);
-  const [mapping,setMapping] = useState({ name:'name',sku:'sku',barcode:'barcode',price:'price',stock:'stock',image:'image',description:'description' });
+  const [mapping,setMapping] = useState({ name:'name',sku:'sku',barcode:'barcode',category:'category',price:'price',stock:'stock',image:'image',description:'description' });
   const parse = (text) => {
     setError(''); setNotice('');
     try { const result=parseProducts(text); setProducts(result); setXmlText(text); setNotice(result.length+' ürün başarıyla okundu.'); }
@@ -88,7 +91,7 @@ export default function XMLCenter() {
     {notice && <div className="xml-alert success"><CheckCircle2 size={17}/>{notice}</div>}
     <section className="panel-card xml-results"><div className="panel-title"><div><h2>3. Okunan ürünler</h2><p>{products.length.toLocaleString('tr-TR')} ürün · ilk 10.000 kayıt gösterilebilir</p></div><Boxes size={20}/></div>
       {!products.length ? <div className="empty-state compact"><div className="empty-icon"><FileCode2 size={26}/></div><h2>Henüz XML yüklenmedi</h2><p>XML dosyanızı eklediğinizde ürünler burada listelenecek.</p></div> :
-      <div className="table-wrap"><table className="data-table"><thead><tr>{columns.slice(0,6).map(k=><th key={k}>{LABELS[k]}</th>)}</tr></thead><tbody>{products.slice(0,100).map(p=><tr key={p.id}><td>{p.name||'—'}</td><td>{p.sku||'—'}</td><td>{p.barcode||'—'}</td><td>{p.price||'—'}</td><td>{p.stock||'—'}</td><td>{p.image?<a href={p.image} target="_blank" rel="noreferrer">Görsel</a>:'—'}</td></tr>)}</tbody></table></div>}
+      <div className="table-wrap"><table className="data-table"><thead><tr>{columns.slice(0,7).map(k=><th key={k}>{LABELS[k]}</th>)}</tr></thead><tbody>{products.slice(0,100).map(p=><tr key={p.id}><td>{p.name||'—'}</td><td>{p.sku||'—'}</td><td>{p.barcode||'—'}</td><td>{p.category||'—'}</td><td>{p.price||'—'}</td><td>{p.stock||'—'}</td><td>{p.image?<a href={p.image} target="_blank" rel="noreferrer">Görsel</a>:'—'}</td></tr>)}</tbody></table></div>}
     </section>
   </div>;
 }
