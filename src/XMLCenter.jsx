@@ -63,16 +63,25 @@ export default function XMLCenter() {
   };
   const columns = useMemo(() => Object.keys(LABELS),[]);
   const output = useMemo(() => products.map(p => columns.reduce((acc,key) => ({...acc,[mapping[key]]:p[key]}),{})),[products,mapping,columns]);
+  const downloadBlob = (blob, filename) => { const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); };
+  const exportExcel = () => {
+    if(!products.length) return;
+    const headers=columns.map(k=>excelCell(LABELS[k]));
+    const rows=output.map(row=>'<Row>'+columns.map(key=>{ const value=row[mapping[key]] ?? ''; const numeric=['price','stock'].includes(key) && value!=='' && Number.isFinite(Number(value)); return excelCell(value,numeric?'Number':'String'); }).join('')+'</Row>');
+    const workbook='<?xml version=\"1.0\" encoding=\"UTF-8\"?><?mso-application progid=\"Excel.Sheet\"?><Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"><Worksheet ss:Name=\"Urunler\"><Table><Row>'+headers.join('')+'</Row>'+rows.join('')+'</Table></Worksheet></Workbook>';
+    downloadBlob(new Blob([workbook],{type:'application/vnd.ms-excel;charset=utf-8;'}),'entegre-ultra-urunler.xls');
+    setNotice('Excel dosyası hazırlandı. Okunan ürün alanları Excel çalışma sayfasına aktarıldı.');
+  };
   const exportCsv = () => {
     if(!products.length) return;
     const header=columns.map(k=>LABELS[k]);
     const lines=[header.map(csvCell).join(','),...output.map(row=>columns.map(k=>csvCell(row[mapping[k]]||'')).join(','))];
     const blob=new Blob(['\uFEFF'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='entegre-ultra-'+marketplace.toLocaleLowerCase('tr')+'-urunler.csv'; a.click(); URL.revokeObjectURL(url);
+    downloadBlob(blob,'entegre-ultra-'+marketplace.toLocaleLowerCase('tr')+'-urunler.csv');
     setNotice(marketplace+' için CSV dosyası hazırlandı. Bu çıktı doğrudan API yayını değildir; pazaryeri şablonuna göre son alan eşleştirmesi gerekebilir.');
   };
   return <div className="xml-center">
-    <div className="xml-intro panel-card"><div className="xml-icon"><FileCode2 size={24}/></div><div><span className="eyebrow">ÜRÜN VERİ AKTARIMI</span><h2>XML Dönüştürme Merkezi</h2><p>Tedarikçi XML dosyanızı yükleyin, ürün alanlarını kontrol edin ve seçtiğiniz kanal için CSV çıktısı alın.</p></div></div>
+    <div className="xml-intro panel-card"><div className="xml-icon"><FileCode2 size={24}/></div><div><span className="eyebrow">ÜRÜN VERİ AKTARIMI</span><h2>XML Dönüştürme Merkezi</h2><p>Tedarikçi XML dosyanızı yükleyin, ürün alanlarını kontrol edin ve Excel veya CSV olarak dışa aktarın.</p></div></div>
     <div className="xml-grid">
       <section className="panel-card"><div className="panel-title"><div><h2>1. XML kaynağını ekleyin</h2><p>XML dosyası yükleyin veya içeriğini yapıştırın.</p></div><Upload size={20}/></div>
         <button type="button" className="xml-upload" onClick={()=>fileRef.current?.click()}><Upload size={20}/><b>{fileName || 'XML dosyası seç'}</b><small>En fazla 15 MB · .xml</small></button><input ref={fileRef} type="file" accept=".xml,text/xml,application/xml" hidden onChange={onFile}/>
@@ -84,7 +93,7 @@ export default function XMLCenter() {
         <label className="field-label">Pazaryeri<select className="wide-input" value={marketplace} onChange={e=>setMarketplace(e.target.value)}>{MARKETPLACES.map(m=><option key={m}>{m}</option>)}</select></label>
         <div className="xml-map-title">ALAN EŞLEŞTİRME</div>
         {columns.map(key=><label className="xml-map-row" key={key}><span>{LABELS[key]}</span><select className="wide-input" value={mapping[key]} onChange={e=>setMapping(prev=>({...prev,[key]:e.target.value}))}>{columns.map(col=><option key={col} value={col}>{LABELS[col]}</option>)}</select></label>)}
-        <button className="primary-button xml-export" type="button" onClick={exportCsv} disabled={!products.length}><Download size={16}/> {marketplace} CSV çıktısı indir</button>
+        <div className="xml-export-actions"><button className="primary-button xml-export" type="button" onClick={exportExcel} disabled={!products.length}><Download size={16}/> Excel dosyası indir</button><button className="secondary-button xml-export" type="button" onClick={exportCsv} disabled={!products.length}><Download size={16}/> CSV dışa aktar</button></div>
       </section>
     </div>
     {error && <div className="xml-alert error"><AlertCircle size={17}/>{error}</div>}
