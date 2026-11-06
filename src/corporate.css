@@ -173,3 +173,24 @@
 .corp-slider-count{color:#fff;font-size:11px;font-weight:850;letter-spacing:1px}.corp-slider-count i{color:#91a8be;font-style:normal;margin:0 5px}
 @media(max-width:850px){.corp-slider{padding:58px 28px 35px}.corp-slider-track{gap:22px;min-height:420px}.corp-slider-copy h1{font-size:48px}.corp-slider-visual{min-height:320px}.corp-slider-orbit.orbit-one{width:300px}.corp-slider-orbit.orbit-two{width:240px}}
 @media(max-width:650px){.corp-slider{padding:49px 20px 28px;min-height:auto}.corp-slider-track{grid-template-columns:1fr;gap:12px;min-height:0}.corp-slider-copy h1{font-size:clamp(39px,11vw,52px);letter-spacing:-2px}.corp-slider-copy>p{font-size:12px}.corp-slider-visual{min-height:285px}.corp-slider-dashboard{padding:18px;transform:none}.corp-slider-dash-grid>div{min-height:86px;padding:10px 8px}.corp-slider-orbit.orbit-one{width:270px}.corp-slider-orbit.orbit-two{width:215px}.corp-slider-float{right:0;bottom:2px;font-size:8px;padding:9px 11px}.corp-slider-controls{margin-top:8px;padding-top:15px}.corp-slider-arrows button{width:34px;height:34px}}
+
+
+/* Pricing plans */
+.corp-pricing{padding:84px max(5vw,calc((100vw - 1180px)/2));background:linear-gradient(145deg,#f5f8fc,#fff 60%,#fff8ef);border-top:1px solid #edf0f4}
+.corp-pricing-heading{text-align:center;max-width:720px;margin:0 auto 34px}
+.corp-pricing-heading h2{font-size:clamp(31px,4vw,46px);letter-spacing:-1.7px;color:var(--navy);margin:13px 0}
+.corp-pricing-heading h2 em{font-style:normal;color:var(--orange)}
+.corp-pricing-heading p{font-size:12px;line-height:1.8;color:#718096}
+.corp-pricing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;align-items:stretch}
+.corp-plan-card{display:flex;flex-direction:column;align-items:flex-start;padding:23px 19px;border:1px solid #e4eaf1;border-radius:14px;background:#fff;box-shadow:0 12px 30px #17365309}
+.corp-plan-featured{border:2px solid #f0a044;box-shadow:0 16px 38px #ed92221c}
+.corp-plan-label{font-size:8px;font-weight:900;letter-spacing:1px;color:#e98527}
+.corp-plan-card h3{font-size:17px;color:var(--navy);margin:14px 0}
+.corp-plan-price{min-height:42px;font-size:clamp(21px,2vw,27px);font-weight:950;letter-spacing:-1px;color:var(--navy)}
+.corp-plan-price small{font-size:9px;letter-spacing:0;color:#7b8999;font-weight:700}
+.corp-plan-card>p{min-height:58px;color:#718096;font-size:10px;line-height:1.7;margin:13px 0 20px}
+.corp-plan-card .corp-primary{width:100%;margin-top:auto;cursor:pointer}
+.corp-pricing-note{max-width:900px;margin:22px auto 0;padding:17px 19px;border:1px solid #e7edf3;border-radius:10px;background:#fff;color:#64758a;font-size:10px;line-height:1.8}
+.corp-pricing-note strong{color:#1d3b5b}
+@media(max-width:900px){.corp-pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.corp-pricing{padding:68px 28px}}
+@media(max-width:500px){.corp-pricing{padding:56px 17px}.corp-pricing-grid{grid-template-columns:1fr;gap:10px}.corp-plan-card{padding:20px}.corp-plan-card>p{min-height:0}}
