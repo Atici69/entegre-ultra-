@@ -40,13 +40,20 @@ export default function Storefront() {
     try {
       if (!supabaseUrl || !supabaseKey) throw new Error('Başvuru sistemi henüz yapılandırılmadı. Lütfen daha sonra tekrar deneyin.');
       if (!/^https:\/\//i.test(supabaseUrl)) throw new Error('Supabase proje adresi geçersiz.');
+      const payload = {
+        name: form.name.trim().slice(0, 120),
+        company: form.company.trim().slice(0, 160) || null,
+        phone: form.phone.trim().slice(0, 30),
+        email: form.email.trim().slice(0, 254) || null,
+        city: form.city.trim().slice(0, 100) || null,
+        message: form.message.trim().slice(0, 2000) || null
+      };
+      if (payload.name.length < 2) throw new Error('Ad soyad en az 2 karakter olmalıdır.');
+      if (payload.phone.length < 5) throw new Error('Geçerli bir telefon numarası girin.');
+      if (payload.email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(payload.email)) throw new Error('E-posta adresini kontrol edin.');
       const { createClient } = await import('@supabase/supabase-js');
       const client = createClient(supabaseUrl, supabaseKey);
-      const { error } = await client.from('dealer_applications').insert([{
-        name: form.name.trim(), company: form.company.trim() || null,
-        phone: form.phone.trim(), email: form.email.trim() || null,
-        city: form.city.trim() || null, message: form.message.trim() || null, status: 'pending'
-      }]);
+      const { error } = await client.from('dealer_applications').insert([payload]);
       if (error) throw error;
       setSubmitted(true);
       setForm({ name: '', company: '', phone: '', email: '', city: '', message: '' });
@@ -77,12 +84,12 @@ export default function Storefront() {
         <section className="corp-form-card"><div className="corp-form-heading"><span>İŞ ORTAKLIĞI</span><h2>Bayi başvuru formu</h2><p>Zorunlu alanları doldurarak başvurunuzu gönderin.</p></div>
           {submitted ? <div className="corp-success"><CheckCircle2 size={46}/><h3>Başvurunuz alındı</h3><p>Başvurunuz başarıyla iletildi. Değerlendirme sürecinde sizinle iletişime geçilecektir.</p><button onClick={() => setApplicationOpen(false)}>Ana sayfaya dön</button></div> :
           <form className="corp-form" onSubmit={submitApplication}>
-            <label>Ad soyad *<input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Adınız ve soyadınız"/></label>
-            <label>Firma / işletme adı<input value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder="Firma adınız"/></label>
-            <label>Telefon numarası *<input required type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="05xx xxx xx xx"/></label>
-            <label>E-posta<input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="ornek@firma.com"/></label>
-            <label>İl / şehir<input value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder="Bulunduğunuz şehir"/></label>
-            <label className="corp-full">Kısaca kendinizden bahsedin<textarea rows="4" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder="İşletmeniz ve bayi olma hedefiniz hakkında bilgi verebilirsiniz."/></label>
+            <label>Ad soyad *<input required maxLength={120} minLength={2} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Adınız ve soyadınız"/></label>
+            <label>Firma / işletme adı<input maxLength={160} value={form.company} onChange={e => setForm({ ...form, company: e.target.value })} placeholder="Firma adınız"/></label>
+            <label>Telefon numarası *<input required type="tel" maxLength={30} minLength={5} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="05xx xxx xx xx"/></label>
+            <label>E-posta<input type="email" maxLength={254} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="ornek@firma.com"/></label>
+            <label>İl / şehir<input maxLength={100} value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder="Bulunduğunuz şehir"/></label>
+            <label className="corp-full">Kısaca kendinizden bahsedin<textarea rows="4" maxLength={2000} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder="İşletmeniz ve bayi olma hedefiniz hakkında bilgi verebilirsiniz."/></label>
             {submitError && <p className="corp-error" role="alert">{submitError}</p>}
             <button className="corp-submit" type="submit" disabled={submitting}>{submitting ? 'Gönderiliyor...' : 'Başvuruyu gönder'} <ArrowRight size={17}/></button>
             <small className="corp-privacy">Başvurunuzun iletilmesi için sistem bağlantısı gereklidir. Kişisel verilerin işlenmesine ilişkin aydınlatma metni yayına alınmadan önce tamamlanmalıdır.</small>
