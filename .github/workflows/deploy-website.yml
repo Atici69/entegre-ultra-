@@ -1,4 +1,4 @@
-name: Deploy Entegre Ultra Website
+name: Deploy Trend Entegre Website
 
 on:
   push:
