@@ -128,7 +128,7 @@ export default function XMLCenter() {
       }
       chunks.push('</products>');
       const xmlBlob = new Blob(chunks, { type: 'application/xml;charset=utf-8' });
-      downloadBlob(xmlBlob, 'entegre-ultra-' + marketplace.toLocaleLowerCase('tr') + '-urunler.xml');
+      downloadBlob(xmlBlob, 'trend-entegre-' + marketplace.toLocaleLowerCase('tr') + '-urunler.xml');
       setNotice(selectedProducts.length.toLocaleString('tr-TR') + ' ürün için XML dosyası hazırlandı. İndirme tarayıcınızın indirme bölümünde görünmelidir.');
     } catch (err) {
       setError(err?.message || 'XML oluşturulurken bir hata oluştu. Daha az ürünle tekrar deneyin.');
@@ -143,13 +143,13 @@ export default function XMLCenter() {
     const sheet = XLSX.utils.aoa_to_sheet(data);
     const book = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(book,sheet,'Ürünler');
-    XLSX.writeFile(book,'entegre-ultra-urunler.xlsx');
+    const bytes = XLSX.write(book,{bookType:'xlsx',type:'array'});\n    downloadBlob(new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'trend-entegre-urunler.xlsx');
     setNotice(selectedProducts.length+' ürün gerçek XLSX çalışma kitabına aktarıldı.');
   };
   const exportCsv = () => {
     if(!selectedProducts.length) return;
     const csv = [columns.map(k=>LABELS[k]),...output.map(row=>columns.map(k=>row[mapping[k]] ?? ''))].map(row=>row.map(v=>'"'+String(v ?? '').replace(/"/g,'""')+'"').join(',')).join('\r\n');
-    downloadBlob(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}),'entegre-ultra-'+marketplace.toLocaleLowerCase('tr')+'-urunler.csv');
+    downloadBlob(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}),'trend-entegre-'+marketplace.toLocaleLowerCase('tr')+'-urunler.csv');
     setNotice('CSV dosyası hazırlandı.');
   };
   return <div className="xml-center">
