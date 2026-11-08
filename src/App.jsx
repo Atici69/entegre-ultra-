@@ -34,6 +34,7 @@ const readLocal = (key) => {
 };
 
 function App() {
+  useEffect(() => { const handleHomeNavigation = (event) => { if (event.data === 'trend-entegre:xml-center') setActive('XML Dönüştürme'); }; window.addEventListener('message', handleHomeNavigation); return () => window.removeEventListener('message', handleHomeNavigation); }, []);
   const [active, setActive] = useState('Ana Sayfa');
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -115,7 +116,7 @@ function App() {
     'Reklamlar': 'Banner alanlarını ve sponsorlu ürün kampanyalarını yönetin.'
   };
 
-  return <div className="app-shell">
+  return <div className={active === 'Ana Sayfa' ? "app-shell home-view" : "app-shell"}>
     <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
       <div className="brand">
         <div className="brand-mark">TE</div>
