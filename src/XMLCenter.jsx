@@ -93,13 +93,13 @@ export default function XMLCenter() {
   };
   const onXmlFile = async e => {
     const file=e.target.files?.[0]; if(!file) return;
-    if(file.size > 15*1024*1024) { setError('Dosya boyutu 15 MB sınırını aşamaz.'); return; }
+    if(file.size > 100*1024*1024) { setError('Dosya boyutu 100 MB sınırını aşamaz.'); return; }
     setFileName(file.name); parse(await file.text()); e.target.value='';
   };
   const onExcelFile = async e => {
     const file=e.target.files?.[0]; if(!file) return;
     setError(''); setNotice('');
-    if(file.size > 15*1024*1024) { setError('Dosya boyutu 15 MB sınırını aşamaz.'); e.target.value=''; return; }
+    if(file.size > 100*1024*1024) { setError('Dosya boyutu 100 MB sınırını aşamaz.'); e.target.value=''; return; }
     try {
       const result=parseSheet(await file.arrayBuffer());
       setProducts(result); setFileName(file.name); setXmlText(''); setLimit('all');
@@ -157,9 +157,9 @@ export default function XMLCenter() {
     <div className="xml-intro panel-card"><div className="xml-icon"><FileCode2 size={24}/></div><div><span className="eyebrow">ÜRÜN VERİ AKTARIMI</span><h2>XML Ürün Merkezi</h2><p>XML veya Excel dosyanızı yükleyin; ürünleri seçin, fiyatları düzenleyin ve XML çıktısı oluşturun.</p></div></div>
     <div className="xml-grid">
       <section className="panel-card"><div className="panel-title"><div><h2>1. Dosyanızı yükleyin</h2><p>XML veya Excel/CSV dosyası seçebilirsiniz.</p></div><Upload size={20}/></div>
-        <button type="button" className="xml-upload" onClick={()=>fileRef.current?.click()}><Upload size={20}/><b>XML dosyası seç</b><small>En fazla 15 MB · .xml</small></button>
+        <button type="button" className="xml-upload" onClick={()=>fileRef.current?.click()}><Upload size={20}/><b>XML dosyası seç</b><small>En fazla 100 MB · .xml</small></button>
         <input ref={fileRef} type="file" accept=".xml,text/xml,application/xml" hidden onChange={onXmlFile}/>
-        <button type="button" className="xml-upload" onClick={()=>excelRef.current?.click()}><FileSpreadsheet size={20}/><b>Excel'i XML'e dönüştür</b><small>En fazla 15 MB · .xlsx, .xls, .csv</small></button>
+        <button type="button" className="xml-upload" onClick={()=>excelRef.current?.click()}><FileSpreadsheet size={20}/><b>Excel'i XML'e dönüştür</b><small>En fazla 100 MB · .xlsx, .xls, .csv</small></button>
         <input ref={excelRef} type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" hidden onChange={onExcelFile}/>
         {fileName && <div className="notice-box">Seçilen dosya: {fileName}</div>}
         <label className="field-label">XML içeriği<textarea className="xml-textarea" value={xmlText} onChange={e=>setXmlText(e.target.value)} placeholder={'<products>\n  <product>\n    <name>Örnek ürün</name>\n    <price>199.90</price>\n  </product>\n</products>'}/></label>
