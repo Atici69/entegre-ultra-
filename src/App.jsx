@@ -118,7 +118,7 @@ function App() {
     <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
       <div className="brand">
         <div className="brand-mark">TE</div>
-        <div><strong>Entegre <span>Ultra</span></strong><small>YÖNETİM PANELİ</small></div>
+        <div><strong>Trend <span>Entegre</span></strong><small>YÖNETİM PANELİ</small></div>
         <button className="mobile-close" onClick={() => setMenuOpen(false)} aria-label="Menüyü kapat"><X size={20}/></button>
       </div>
       <div className="workspace"><div className="workspace-dot"/> <span>Mağazam</span><ChevronDown size={15}/></div>
