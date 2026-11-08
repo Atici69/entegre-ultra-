@@ -99,25 +99,25 @@ export default function Storefront() {
           </div>
           <div className="corp-pricing-grid">
             <article className="corp-plan-card">
-              <span className="corp-plan-label">İLK ADIM</span><h3>Ultra Başlangıç</h3>
+              <span className="corp-plan-label">İLK ADIM</span><h3>Başlangıç</h3>
               <div className="corp-plan-price">900 TL <small>/ ay + KDV</small></div>
               <p>Trend Entegre ile çalışmaya başlamak isteyen işletmeler için.</p>
               <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
             </article>
             <article className="corp-plan-card corp-plan-featured">
-              <span className="corp-plan-label">GELİŞEN İŞLETMELER</span><h3>Ultra Profesyonel</h3>
+              <span className="corp-plan-label">GELİŞEN İŞLETMELER</span><h3>Profesyonel</h3>
               <div className="corp-plan-price">1.875 TL <small>/ ay + KDV</small></div>
               <p>Birden fazla satış kanalını yönetmek isteyen işletmeler için.</p>
               <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
             </article>
             <article className="corp-plan-card">
-              <span className="corp-plan-label">BÜYÜYEN OPERASYONLAR</span><h3>Ultra İşletme</h3>
+              <span className="corp-plan-label">BÜYÜYEN OPERASYONLAR</span><h3>İşletme</h3>
               <div className="corp-plan-price">3.000 TL <small>/ ay + KDV</small></div>
               <p>Daha kapsamlı operasyonlar için paket seçeneği.</p>
               <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
             </article>
             <article className="corp-plan-card">
-              <span className="corp-plan-label">ÖZEL ÇÖZÜM</span><h3>Ultra Kurumsal</h3>
+              <span className="corp-plan-label">ÖZEL ÇÖZÜM</span><h3>Kurumsal</h3>
               <div className="corp-plan-price">Özel fiyat</div>
               <p>Kurumsal ihtiyaçlara göre tekliflendirme.</p>
               <button className="corp-primary" onClick={openApplication}>Teklif al <ArrowRight size={16}/></button>
