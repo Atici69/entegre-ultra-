@@ -61,6 +61,7 @@ export default function XMLCenter() {
   const [marketplace,setMarketplace] = useState('Trendyol');
   const [error,setError] = useState('');
   const [notice,setNotice] = useState('');
+  const [isExporting,setIsExporting] = useState(false);
   const [limit,setLimit] = useState('all');
   const [pricePercent,setPricePercent] = useState('0');
   const fileRef = useRef(null);
@@ -73,7 +74,18 @@ export default function XMLCenter() {
     return products.slice(0,count).map(p => ({ ...p, price: p.price !== '' && Number.isFinite(Number(p.price)) ? (Number(p.price) * (1 + pct/100)).toFixed(2) : p.price }));
   },[products,limit,pricePercent]);
   const output = useMemo(() => selectedProducts.map(p => columns.reduce((acc,key) => ({...acc,[mapping[key]]:p[key]}),{})),[selectedProducts,mapping,columns]);
-  const downloadBlob = (blob, filename) => { const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); };
+  const downloadBlob = (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // Keep the object URL alive long enough for mobile browsers to start the download.
+    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+  };
   const parse = text => {
     setError(''); setNotice('');
     try { const result=parseProducts(text); setProducts(result); setXmlText(text); setLimit('all'); setNotice(result.length+' ürün XML dosyasından okundu.'); }
@@ -95,12 +107,35 @@ export default function XMLCenter() {
     } catch(err) { setProducts([]); setError(err.message || 'Excel dosyası okunamadı.'); }
     e.target.value='';
   };
-  const buildXml = () => {
-    if(!selectedProducts.length) return;
-    const rows = selectedProducts.map(p => '<product>'+columns.map(key => '<'+key+'>'+xmlEscape(p[key])+'</'+key+'>').join('')+'</product>').join('');
-    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<products>'+rows+'</products>';
-    downloadBlob(new Blob([xml],{type:'application/xml;charset=utf-8;'}),'entegre-ultra-'+marketplace.toLocaleLowerCase('tr')+'-urunler.xml');
-    setNotice(selectedProducts.length+' ürün XML dosyasına dönüştürüldü ve indirildi.');
+  const buildXml = async () => {
+    if (!selectedProducts.length || isExporting) return;
+    setError('');
+    setNotice('XML hazırlanıyor…');
+    setIsExporting(true);
+    try {
+      const chunks = ['<?xml version="1.0" encoding="UTF-8"?>\n<products>'];
+      const batchSize = 300;
+      for (let start = 0; start < selectedProducts.length; start += batchSize) {
+        const batch = selectedProducts.slice(start, start + batchSize);
+        chunks.push(batch.map(p =>
+          '<product>' + columns.map(key =>
+            '<' + key + '>' + xmlEscape(p[key]) + '</' + key + '>'
+          ).join('') + '</product>'
+        ).join(''));
+        setNotice('XML hazırlanıyor… ' + Math.min(start + batchSize, selectedProducts.length).toLocaleString('tr-TR') + ' / ' + selectedProducts.length.toLocaleString('tr-TR') + ' ürün');
+        // Yield between batches so the page remains responsive for large feeds.
+        await new Promise(resolve => window.setTimeout(resolve, 0));
+      }
+      chunks.push('</products>');
+      const xmlBlob = new Blob(chunks, { type: 'application/xml;charset=utf-8' });
+      downloadBlob(xmlBlob, 'entegre-ultra-' + marketplace.toLocaleLowerCase('tr') + '-urunler.xml');
+      setNotice(selectedProducts.length.toLocaleString('tr-TR') + ' ürün için XML dosyası hazırlandı. İndirme tarayıcınızın indirme bölümünde görünmelidir.');
+    } catch (err) {
+      setError(err?.message || 'XML oluşturulurken bir hata oluştu. Daha az ürünle tekrar deneyin.');
+      setNotice('');
+    } finally {
+      setIsExporting(false);
+    }
   };
   const exportExcel = () => {
     if(!selectedProducts.length) return;
@@ -137,7 +172,7 @@ export default function XMLCenter() {
         <div className="notice-box">{Number(pricePercent)>0 ? 'Fiyatlar yüzde '+pricePercent+' artırılarak çıktıya uygulanır.' : Number(pricePercent)<0 ? 'Fiyatlar yüzde '+Math.abs(Number(pricePercent))+' azaltılarak çıktıya uygulanır.' : 'Fiyatlar mevcut değerleriyle korunur.'}</div>
         <div className="xml-map-title">ALAN EŞLEŞTİRME</div>
         {columns.map(key=><label className="xml-map-row" key={key}><span>{LABELS[key]}</span><select className="wide-input" value={mapping[key]} onChange={e=>setMapping(prev=>({...prev,[key]:e.target.value}))}>{columns.map(col=><option key={col} value={col}>{LABELS[col]}</option>)}</select></label>)}
-        <div className="xml-export-actions"><button className="primary-button xml-export" type="button" onClick={buildXml} disabled={!selectedProducts.length}><Download size={16}/> XML indir</button><button className="secondary-button xml-export" type="button" onClick={exportExcel} disabled={!selectedProducts.length}><Download size={16}/> XLSX indir</button><button className="secondary-button xml-export" type="button" onClick={exportCsv} disabled={!selectedProducts.length}><Download size={16}/> CSV indir</button></div>
+        <div className="xml-export-actions"><button className="primary-button xml-export" type="button" onClick={buildXml} disabled={!selectedProducts.length || isExporting}><Download size={16}/> {isExporting ? 'XML hazırlanıyor…' : 'XML indir'}</button><button className="secondary-button xml-export" type="button" onClick={exportExcel} disabled={!selectedProducts.length}><Download size={16}/> XLSX indir</button><button className="secondary-button xml-export" type="button" onClick={exportCsv} disabled={!selectedProducts.length}><Download size={16}/> CSV indir</button></div>
       </section>
     </div>
     {error && <div className="xml-alert error"><AlertCircle size={17}/>{error}</div>}
