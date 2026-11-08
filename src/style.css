@@ -39,7 +39,7 @@ footer{border-top:1px solid #e9edf3;padding:17px 38px;color:#9ba5b3;font-size:9p
 .banner-row>div{display:grid;gap:4px;flex:1}.banner-row strong{font-size:11px;color:#34445e}.banner-row small,.muted-note{font-size:9px;color:#929eaf}.muted-note{line-height:1.6;margin-top:18px}
 @media(max-width:760px){.buybox-layout{grid-template-columns:1fr}.banner-form{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}}
 
-/* Entegre Ultra customer-facing storefront */
+/* Trend Entegre customer-facing storefront */
 .storefront{background:#fff;border:1px solid #e9edf3;border-radius:14px;overflow:hidden;color:#1b2940;margin-top:4px}
 .shop-topline{height:66px;display:flex;align-items:center;gap:22px;padding:0 22px;border-bottom:1px solid #edf0f4}
 .shop-brand{display:flex;align-items:center;gap:9px;white-space:nowrap;font-size:17px}.shop-brand b,.shop-footer b{color:#ed8b25}
