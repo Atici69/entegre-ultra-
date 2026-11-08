@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 
 const navItems = [
+  { label: 'Ana Sayfa', icon: Home },
   { label: 'Genel Bakış', icon: LayoutDashboard },
   { label: 'Mağaza Vitrini', icon: Home },
   { label: 'XML Dönüştürme', icon: FileCode2 },
@@ -33,7 +34,7 @@ const readLocal = (key) => {
 };
 
 function App() {
-  const [active, setActive] = useState('Mağaza Vitrini');
+  const [active, setActive] = useState('Ana Sayfa');
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
@@ -134,7 +135,7 @@ function App() {
     </aside>
 
     <main className="main-area">
-      <header className="topbar">
+      {active !== 'Ana Sayfa' && <header className="topbar">
         <button className="mobile-menu" onClick={() => setMenuOpen(true)} aria-label="Menüyü aç"><Menu/></button>
         <div className="breadcrumb">Panel <span>/</span> {active}</div>
         <div className="top-actions">
@@ -142,9 +143,9 @@ function App() {
           <button className="icon-button" aria-label="Bildirimler"><Bell size={19}/><i/></button>
           <div className="avatar">TE</div>
         </div>
-      </header>
+      </header>}
 
-      <section className="content">
+      {active === 'Ana Sayfa' ? <iframe title="Trend Entegre ana sayfa" src="./trend-entegre-ana-sayfa.html" style={{width:"100%",height:"100vh",minHeight:"900px",border:0,display:"block",background:"#fff"}} /> : <section className="content">
         <div className="welcome-row">
           <div><p className="eyebrow">YÖNETİM MERKEZİ</p><h1>{active}</h1>
             <p className="subheading">Trend Entegre'ya hoş geldiniz. İşletmenizi tek panelden yönetin.</p></div>
@@ -239,8 +240,8 @@ function App() {
             </tbody></table></div>}
         </div>}
 
-        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && active !== 'XML Dönüştürme' && active !== 'Mağaza Vitrini' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
-      </section>
+        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && active !== 'XML Dönüştürme' && active !== 'Mağaza Vitrini' && active !== 'Ana Sayfa' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
+      </section>}
       <footer>© 2026 Trend Entegre <span>İlk sürüm · Geliştirme aşamasında</span></footer>
     </main>
 
