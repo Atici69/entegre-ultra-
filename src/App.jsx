@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { createClient } from '@supabase/supabase-js';
 import Storefront from './Storefront.jsx';
 import XMLCenter from './XMLCenter.jsx';
@@ -34,6 +35,8 @@ const readLocal = (key) => {
 };
 
 function App() {
+  const [showIntro, setShowIntro] = useState(() => Capacitor.isNativePlatform() && localStorage.getItem('te_intro_seen_v1') !== 'yes');
+  const finishIntro = () => { localStorage.setItem('te_intro_seen_v1', 'yes'); setShowIntro(false); };
   useEffect(() => { const handleHomeNavigation = (event) => { if (event.data === 'trend-entegre:xml-center') setActive('XML Dönüştürme'); }; window.addEventListener('message', handleHomeNavigation); return () => window.removeEventListener('message', handleHomeNavigation); }, []);
   const [active, setActive] = useState('Ana Sayfa');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -117,6 +120,21 @@ function App() {
   };
 
   return <div className={active === 'Ana Sayfa' ? "app-shell home-view" : "app-shell"}>
+    {showIntro && <div className="intro-screen" role="dialog" aria-label="Trend Entegre tanıtımı">
+      <div className="intro-glow intro-glow-one"/><div className="intro-glow intro-glow-two"/>
+      <button className="intro-skip" onClick={finishIntro}>Atla <ArrowUpRight size={15}/></button>
+      <div className="intro-content">
+        <div className="intro-logo-wrap"><div className="intro-logo">TE</div><span className="intro-orbit intro-orbit-a"/><span className="intro-orbit intro-orbit-b"/></div>
+        <div className="intro-kicker">E-TİCARETİN YENİ MERKEZİ</div>
+        <h1>Trend <span>Entegre</span></h1>
+        <p className="intro-lead">Tüm mağazaların, tek bir akıllı merkezde.</p>
+        <div className="intro-marketplaces"><span>Trendyol</span><span>Hepsiburada</span><span>Amazon</span><span>n11</span></div>
+        <div className="intro-features"><div><Package size={18}/><b>Ürünlerini yönet</b></div><div><FileCode2 size={18}/><b>XML'ini dönüştür</b></div><div><Target size={18}/><b>Buybox'ı takip et</b></div></div>
+        <button className="intro-start" onClick={finishIntro}>Hemen Başla <ArrowUpRight size={18}/></button>
+        <small className="intro-footnote">İşini büyüt. Kontrol sende.</small>
+      </div>
+      <div className="intro-bottom-line"><span/><span/><span/></div>
+    </div>}
     <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
       <div className="brand">
         <div className="brand-mark">TE</div>
