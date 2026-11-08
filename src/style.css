@@ -96,3 +96,28 @@ footer{border-top:1px solid #e9edf3;padding:17px 38px;color:#9ba5b3;font-size:9p
 .app-shell.home-view .sidebar{display:none!important}
 .app-shell.home-view .main-area{margin-left:0!important;width:100%;min-height:100vh}
 .app-shell.home-view>main>iframe{width:100%;height:100vh;min-height:100vh}
+
+
+/* Premium first-launch intro for native Android */
+.intro-screen{position:fixed;inset:0;z-index:5000;overflow:hidden;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 38%,#1d4778 0%,#102b4c 43%,#09182c 100%);color:#fff;isolation:isolate;animation:intro-fade-in .55s ease both}
+.intro-screen:before{content:"";position:absolute;inset:0;opacity:.17;background-image:linear-gradient(#ffffff12 1px,transparent 1px),linear-gradient(90deg,#ffffff12 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(to bottom,black,transparent 88%)}
+.intro-glow{position:absolute;border-radius:50%;filter:blur(3px);pointer-events:none}.intro-glow-one{width:290px;height:290px;top:-100px;right:-85px;background:#f4a62c26}.intro-glow-two{width:250px;height:250px;bottom:-100px;left:-90px;background:#2f8cce25}
+.intro-skip{position:absolute;top:max(22px,env(safe-area-inset-top));right:22px;display:flex;align-items:center;gap:5px;border:1px solid #ffffff38;background:#ffffff10;color:#e4edf8;border-radius:30px;padding:8px 13px;font-size:11px;z-index:2}
+.intro-content{position:relative;z-index:1;width:min(420px,88vw);text-align:center;padding:42px 0 32px;animation:intro-rise .8s .12s both}
+.intro-logo-wrap{width:104px;height:104px;margin:0 auto 27px;position:relative;display:grid;place-items:center}
+.intro-logo{width:76px;height:76px;border-radius:25px;display:grid;place-items:center;background:linear-gradient(145deg,#ffdb70,#f28a24);color:#142944;font-size:27px;font-weight:900;letter-spacing:-2px;box-shadow:0 14px 45px #f39a3044, inset 0 1px 1px #fff9;transform:rotate(-7deg);animation:intro-logo-pop .8s .25s cubic-bezier(.2,.8,.2,1) both}
+.intro-orbit{position:absolute;border:1px solid #ffffff45;border-radius:50%;inset:0;animation:intro-spin 12s linear infinite}.intro-orbit-a{border-style:dashed;inset:4px}.intro-orbit-b{inset:-9px;border-color:#f7b94c55;animation-direction:reverse}
+.intro-kicker{font-size:9px;letter-spacing:3px;font-weight:800;color:#f8c66b;margin-bottom:12px}
+.intro-content h1{font-size:clamp(34px,9vw,49px);letter-spacing:-2.4px;line-height:1;margin:0;color:#fff;font-weight:800}.intro-content h1 span{color:#ffc45b}
+.intro-lead{font-size:14px;color:#d2deec;margin:14px 0 22px;letter-spacing:.1px}
+.intro-marketplaces{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:28px}.intro-marketplaces span{border:1px solid #ffffff2b;background:#ffffff0d;border-radius:20px;padding:7px 10px;font-size:9px;color:#e8eef6}
+.intro-features{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 auto 27px}
+.intro-features div{min-height:74px;border:1px solid #ffffff20;background:linear-gradient(145deg,#ffffff14,#ffffff08);border-radius:12px;padding:12px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#ffc45b}
+.intro-features b{font-size:9px;color:#eaf0f7;font-weight:600}
+.intro-start{width:min(290px,100%);height:50px;margin:0 auto;border:0;border-radius:12px;background:linear-gradient(100deg,#ffd46c,#f49a31);color:#172c48;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 12px 28px #f29a3040;transition:transform .2s,box-shadow .2s}
+.intro-start:active{transform:scale(.98)}
+.intro-footnote{display:block;color:#9fb2c9;font-size:9px;letter-spacing:1.4px;margin-top:17px}
+.intro-bottom-line{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));display:flex;gap:6px}.intro-bottom-line span{width:5px;height:5px;border-radius:9px;background:#ffffff55}.intro-bottom-line span:first-child{width:22px;background:#ffc45b}
+@keyframes intro-fade-in{from{opacity:0}to{opacity:1}}@keyframes intro-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes intro-logo-pop{from{opacity:0;transform:scale(.65) rotate(-18deg)}to{opacity:1;transform:scale(1) rotate(-7deg)}}@keyframes intro-spin{to{transform:rotate(360deg)}}
+@media(max-height:650px){.intro-content{padding:18px 0}.intro-logo-wrap{width:78px;height:78px;margin-bottom:14px}.intro-logo{width:58px;height:58px;border-radius:19px;font-size:22px}.intro-marketplaces{margin-bottom:15px}.intro-features{margin-bottom:15px}.intro-features div{min-height:60px}.intro-lead{margin:9px 0 14px}}
+@media(prefers-reduced-motion:reduce){.intro-screen,.intro-content,.intro-logo,.intro-orbit{animation:none!important}}
