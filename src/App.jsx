@@ -117,7 +117,7 @@ function App() {
   return <div className="app-shell">
     <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
       <div className="brand">
-        <div className="brand-mark">EU</div>
+        <div className="brand-mark">TE</div>
         <div><strong>Entegre <span>Ultra</span></strong><small>YÖNETİM PANELİ</small></div>
         <button className="mobile-close" onClick={() => setMenuOpen(false)} aria-label="Menüyü kapat"><X size={20}/></button>
       </div>
@@ -140,14 +140,14 @@ function App() {
         <div className="top-actions">
           <label className="search-box"><Search size={17}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Panelde ara..."/></label>
           <button className="icon-button" aria-label="Bildirimler"><Bell size={19}/><i/></button>
-          <div className="avatar">EU</div>
+          <div className="avatar">TE</div>
         </div>
       </header>
 
       <section className="content">
         <div className="welcome-row">
           <div><p className="eyebrow">YÖNETİM MERKEZİ</p><h1>{active}</h1>
-            <p className="subheading">Entegre Ultra'ya hoş geldiniz. İşletmenizi tek panelden yönetin.</p></div>
+            <p className="subheading">Trend Entegre'ya hoş geldiniz. İşletmenizi tek panelden yönetin.</p></div>
           {(active === 'Ürünler' || active === 'Müşteriler') && <button className="primary-button" onClick={openAdd}><Plus size={18}/> Yeni kayıt</button>}
         </div>
 
@@ -173,7 +173,7 @@ function App() {
         {active === 'Genel Bakış' && <>
           <div className="trial-banner">
             <div className="trial-icon"><TrendingUp size={21}/></div>
-            <div><strong>Entegre Ultra ilk sürüm</strong><p>Ürün ve müşteri kayıtları bu cihazda saklanır. Sunucu senkronizasyonu henüz etkin değil.</p></div>
+            <div><strong>Trend Entegre ilk sürüm</strong><p>Ürün ve müşteri kayıtları bu cihazda saklanır. Sunucu senkronizasyonu henüz etkin değil.</p></div>
             <button onClick={() => setActive('Ürünler')}>Ürün ekle <ArrowUpRight size={16}/></button>
           </div>
           <div className="section-heading"><div><h2>Genel durum</h2><p>Mağazanızın güncel özeti</p></div><span className="date-chip">Yerel kayıtlar</span></div>
@@ -241,7 +241,7 @@ function App() {
 
         {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && active !== 'XML Dönüştürme' && active !== 'Mağaza Vitrini' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
       </section>
-      <footer>© 2026 Entegre Ultra <span>İlk sürüm · Geliştirme aşamasında</span></footer>
+      <footer>© 2026 Trend Entegre <span>İlk sürüm · Geliştirme aşamasında</span></footer>
     </main>
 
     {menuOpen && <button className="scrim" onClick={() => setMenuOpen(false)} aria-label="Menüyü kapat"/>}
