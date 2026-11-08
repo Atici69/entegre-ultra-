@@ -92,9 +92,35 @@ export default function XMLCenter() {
     catch(e) { setProducts([]); setError(e.message || 'XML okunamadı.'); }
   };
   const onXmlFile = async e => {
-    const file=e.target.files?.[0]; if(!file) return;
-    if(file.size > 100*1024*1024) { setError('Dosya boyutu 100 MB sınırını aşamaz.'); return; }
-    setFileName(file.name); parse(await file.text()); e.target.value='';
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    setError('');
+    setNotice('');
+    if (file.size === 0) {
+      setError('Seçtiğiniz XML dosyası boş görünüyor.');
+      input.value = '';
+      return;
+    }
+    if (file.size > 100 * 1024 * 1024) {
+      setError('Dosya boyutu 100 MB sınırını aşıyor. Daha küçük bir XML dosyası seçin.');
+      input.value = '';
+      return;
+    }
+    setFileName(file.name);
+    setNotice('Dosya okunuyor: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)');
+    try {
+      const text = await file.text();
+      if (!text.trim()) throw new Error('XML dosyasının içeriği boş okunuyor.');
+      parse(text);
+    } catch (err) {
+      setProducts([]);
+      setXmlText('');
+      setError(err?.message || 'XML dosyası okunamadı. Dosyanın bozuk olmadığını kontrol edin.');
+      setNotice('');
+    } finally {
+      input.value = '';
+    }
   };
   const onExcelFile = async e => {
     const file=e.target.files?.[0]; if(!file) return;
@@ -154,7 +180,7 @@ export default function XMLCenter() {
     setNotice('CSV dosyası hazırlandı.');
   };
   return <div className="xml-center">
-    <div className="xml-intro panel-card"><div className="xml-icon"><FileCode2 size={24}/></div><div><span className="eyebrow">ÜRÜN VERİ AKTARIMI</span><h2>XML Ürün Merkezi</h2><p>XML veya Excel dosyanızı yükleyin; ürünleri seçin, fiyatları düzenleyin ve XML çıktısı oluşturun.</p></div></div>
+    <div className="xml-intro panel-card"><div className="xml-icon"><FileCode2 size={24}/></div><div><span className="eyebrow">ÜRÜN VERİ AKTARIMI</span><h2>XML Ürün Merkezi</h2><p>XML veya Excel dosyanızı yükleyin; ürünleri seçin, fiyatları düzenleyin ve XML çıktısı oluşturun. Tek dosyada en fazla 100 MB desteklenir.</p></div></div>
     <div className="xml-grid">
       <section className="panel-card"><div className="panel-title"><div><h2>1. Dosyanızı yükleyin</h2><p>XML veya Excel/CSV dosyası seçebilirsiniz.</p></div><Upload size={20}/></div>
         <button type="button" className="xml-upload" onClick={()=>fileRef.current?.click()}><Upload size={20}/><b>XML dosyası seç</b><small>En fazla 100 MB · .xml</small></button>
