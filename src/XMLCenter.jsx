@@ -143,7 +143,8 @@ export default function XMLCenter() {
     const sheet = XLSX.utils.aoa_to_sheet(data);
     const book = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(book,sheet,'Ürünler');
-    const bytes = XLSX.write(book,{bookType:'xlsx',type:'array'});\n    downloadBlob(new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'trend-entegre-urunler.xlsx');
+    const bytes = XLSX.write(book,{bookType:'xlsx',type:'array'});
+    downloadBlob(new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'trend-entegre-urunler.xlsx');
     setNotice(selectedProducts.length+' ürün gerçek XLSX çalışma kitabına aktarıldı.');
   };
   const exportCsv = () => {
