@@ -60,7 +60,7 @@ export default function Storefront() {
 
   return <div className="corporate-site">
     <header className="corp-header">
-      <a className="corp-brand" href="#anasayfa" aria-label="Entegre Ultra ana sayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
+      <a className="corp-brand" href="#anasayfa" aria-label="Trend Entegre ana sayfa"><span className="corp-logo">TE</span><span>Trend <b>Entegre</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
         <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a><a href="#paketler" onClick={(e) => { e.preventDefault(); setPricingOpen(true); setApplicationOpen(false); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Paketler</a>
@@ -73,7 +73,7 @@ export default function Storefront() {
     {applicationOpen ? <main className="corp-application">
       <button className="corp-back" onClick={() => setApplicationOpen(false)}>← Ana sayfaya dön</button>
       <div className="corp-application-grid">
-        <div className="corp-application-copy"><span className="corp-kicker">ENTEGRE ULTRA İŞ ORTAKLIĞI</span><h1>Birlikte büyüyelim.</h1><p>Entegre Ultra bayi ağına katılmak için başvurunuzu iletin. Ekibimiz bilgilerinizi değerlendirsin ve sonraki adımlar için sizinle iletişime geçsin.</p><ul><li><CheckCircle2/> Bayi ve alt bayi yapılanması</li><li><CheckCircle2/> Müşteri ve abonelik satışı takibi</li><li><CheckCircle2/> Satış komisyonu ve kazanç takibi</li></ul></div>
+        <div className="corp-application-copy"><span className="corp-kicker">TREND ENTEGRE İŞ ORTAKLIĞI</span><h1>Birlikte büyüyelim.</h1><p>Trend Entegre bayi ağına katılmak için başvurunuzu iletin. Ekibimiz bilgilerinizi değerlendirsin ve sonraki adımlar için sizinle iletişime geçsin.</p><ul><li><CheckCircle2/> Bayi ve alt bayi yapılanması</li><li><CheckCircle2/> Müşteri ve abonelik satışı takibi</li><li><CheckCircle2/> Satış komisyonu ve kazanç takibi</li></ul></div>
         <section className="corp-form-card"><div className="corp-form-heading"><span>İŞ ORTAKLIĞI</span><h2>Bayi başvuru formu</h2><p>Zorunlu alanları doldurarak başvurunuzu gönderin.</p></div>
           {submitted ? <div className="corp-success"><CheckCircle2 size={46}/><h3>Başvurunuz alındı</h3><p>Başvurunuz başarıyla iletildi. Değerlendirme sürecinde sizinle iletişime geçilecektir.</p><button onClick={() => setApplicationOpen(false)}>Ana sayfaya dön</button></div> :
           <form className="corp-form" onSubmit={submitApplication}>
@@ -93,7 +93,7 @@ export default function Storefront() {
       <button className="corp-back" onClick={() => { setPricingOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>← Ana sayfaya dön</button>
               <section className="corp-pricing" id="paketler">
           <div className="corp-pricing-heading">
-            <span className="corp-kicker">ENTEGRE ULTRA FİYATLANDIRMA</span>
+            <span className="corp-kicker">TREND ENTEGRE FİYATLANDIRMA</span>
             <h2>İşinize uygun paketi <em>seçin.</em></h2>
             <p>Şeffaf fiyatlandırma. E-fatura modülü paketlere dahil değildir.</p>
           </div>
@@ -101,7 +101,7 @@ export default function Storefront() {
             <article className="corp-plan-card">
               <span className="corp-plan-label">İLK ADIM</span><h3>Ultra Başlangıç</h3>
               <div className="corp-plan-price">900 TL <small>/ ay + KDV</small></div>
-              <p>Entegre Ultra ile çalışmaya başlamak isteyen işletmeler için.</p>
+              <p>Trend Entegre ile çalışmaya başlamak isteyen işletmeler için.</p>
               <button className="corp-primary" onClick={() => window.alert('Kredi kartıyla ödeme yakında açılacak. iyzico hesabı ve güvenli ödeme bağlantısı etkinleştirildiğinde buradan ödeme yapabilirsiniz.')}>Hemen öde <ArrowRight size={16}/></button>
             </article>
             <article className="corp-plan-card corp-plan-featured">
@@ -145,7 +145,7 @@ export default function Storefront() {
               <div className="corp-trust-line"><ShieldCheck size={17}/> İş süreçlerinizi tek noktadan takip etme yaklaşımı</div>
             </div>
             <div className="corp-slider-visual"><div className="corp-slider-orbit orbit-one"/><div className="corp-slider-orbit orbit-two"/>
-              <div className="corp-slider-dashboard"><div className="corp-slider-dash-head"><span>EU</span><b>ENTEGRE ULTRA</b><i>●●●</i></div><small>YÖNETİM MERKEZİ</small><strong>{['TEK XML · ÇOKLU PAZARYERİ','FİYAT · REKABET · KÂR','TEK PANEL · ÇOKLU KANAL'][heroSlide]}</strong>
+              <div className="corp-slider-dashboard"><div className="corp-slider-dash-head"><span>TE</span><b>TREND ENTEGRE</b><i>●●●</i></div><small>YÖNETİM MERKEZİ</small><strong>{['TEK XML · ÇOKLU PAZARYERİ','FİYAT · REKABET · KÂR','TEK PANEL · ÇOKLU KANAL'][heroSlide]}</strong>
                 <div className="corp-slider-dash-grid">{[['XML aktarımı','Format eşleştirme','Dosya çıktısı'],['Rakip takibi','Kâr sınırı','Performans analizi'],['Ürün ve stok','Sipariş yönetimi','Kanal takibi']][heroSlide].map((item,i)=><div key={item}><span>0{i+1}</span><b>{item}</b><i/></div>)}</div>
                 <div className="corp-slider-dash-bottom"><span/><b>Tek merkezden yönetim deneyimi</b></div>
               </div><div className="corp-slider-float"><CheckCircle2/> Entegre yönetim yaklaşımı</div>
@@ -155,7 +155,7 @@ export default function Storefront() {
         </section>
         <section className="corp-xml" id="xml-donusum">
           <div className="corp-xml-copy">
-            <span className="corp-kicker">ENTEGRE ULTRA'NIN YENİ NESİL ÇÖZÜMÜ</span>
+            <span className="corp-kicker">TREND ENTEGRE'NIN YENİ NESİL ÇÖZÜMÜ</span>
             <div className="corp-xml-eyebrow"><FileCode2 size={15}/> XML DÖNÜŞTÜRME MERKEZİ</div>
             <h2>Bir tedarikçi XML'i.<br/><em>İstediğiniz satış kanalına hazır.</em></h2>
             <p>Tedarikçinizin XML bağlantısını ekleyin. Ürün verilerini tek yerde toplayın, hedef pazaryerinin alanlarına göre eşleştirin ve aktarım için hazırlayın.</p>
@@ -181,11 +181,11 @@ export default function Storefront() {
           </div>
         </section>
         <section className="corp-mobile-first" id="mobil">
-          <div className="corp-mobile-copy"><span className="corp-kicker">MOBİL ÖNCELİKLİ DENEYİM</span><h2>Entegre Ultra <em>cebinizde.</em></h2><p>Ürünlerinizi, stoklarınızı, siparişlerinizi ve bayi ağınızı telefonunuzdan kolayca takip edebilmeniz için mobil kullanım öncelikli bir deneyim hedefliyoruz. İhtiyaç duyduğunuzda bilgisayarınızdan da erişebilirsiniz.</p><div className="corp-mobile-points"><span><CheckCircle2/> Telefonda kolay kullanım</span><span><CheckCircle2/> Hızlı erişim ve sade ekranlar</span><span><CheckCircle2/> Mobil ve web uyumu</span></div></div>
-          <div className="corp-mobile-visual"><div className="corp-phone"><div className="corp-phone-notch"/><div className="corp-phone-brand">EU <b>Entegre Ultra</b></div><small>YÖNETİM ÖZETİ</small><strong>Kontrol cebinizde</strong><div className="corp-phone-stat"><span>Ürünler</span><b>Yönetim</b></div><div className="corp-phone-stat"><span>Siparişler</span><b>Takip</b></div><div className="corp-phone-stat"><span>Buybox</span><b>Analiz</b></div><div className="corp-phone-nav"><i/><i/><i/><i/></div></div></div>
+          <div className="corp-mobile-copy"><span className="corp-kicker">MOBİL ÖNCELİKLİ DENEYİM</span><h2>Trend Entegre <em>cebinizde.</em></h2><p>Ürünlerinizi, stoklarınızı, siparişlerinizi ve bayi ağınızı telefonunuzdan kolayca takip edebilmeniz için mobil kullanım öncelikli bir deneyim hedefliyoruz. İhtiyaç duyduğunuzda bilgisayarınızdan da erişebilirsiniz.</p><div className="corp-mobile-points"><span><CheckCircle2/> Telefonda kolay kullanım</span><span><CheckCircle2/> Hızlı erişim ve sade ekranlar</span><span><CheckCircle2/> Mobil ve web uyumu</span></div></div>
+          <div className="corp-mobile-visual"><div className="corp-phone"><div className="corp-phone-notch"/><div className="corp-phone-brand">EU <b>Trend Entegre</b></div><small>YÖNETİM ÖZETİ</small><strong>Kontrol cebinizde</strong><div className="corp-phone-stat"><span>Ürünler</span><b>Yönetim</b></div><div className="corp-phone-stat"><span>Siparişler</span><b>Takip</b></div><div className="corp-phone-stat"><span>Buybox</span><b>Analiz</b></div><div className="corp-phone-nav"><i/><i/><i/><i/></div></div></div>
         </section>
         <section className="corp-difference" id="hakkimizda">
-          <div className="corp-difference-heading"><span className="corp-kicker">BİZ NE YAPIYORUZ?</span><h2>Ticaretin dağınık işlerini<br/><em>tek bir düzende topluyoruz.</em></h2><p>Entegre Ultra; e-ticaret yapan işletmelerin pazaryeri, mağaza, ürün, stok, sipariş, fiyat ve bayi süreçlerini tek bir yönetim deneyiminde bir araya getirmek için tasarlanıyor.</p></div>
+          <div className="corp-difference-heading"><span className="corp-kicker">BİZ NE YAPIYORUZ?</span><h2>Ticaretin dağınık işlerini<br/><em>tek bir düzende topluyoruz.</em></h2><p>Trend Entegre; e-ticaret yapan işletmelerin pazaryeri, mağaza, ürün, stok, sipariş, fiyat ve bayi süreçlerini tek bir yönetim deneyiminde bir araya getirmek için tasarlanıyor.</p></div>
           <div className="corp-difference-grid">
             <article className="corp-difference-card"><span>01</span><h3>Operasyonları birleştiriyoruz</h3><p>Farklı satış kanallarındaki ürün, stok ve sipariş süreçlerini tek merkezden takip etmenize yardımcı oluyoruz.</p></article>
             <article className="corp-difference-card"><span>02</span><h3>Fiyat rekabetini kâra bağlıyoruz</h3><p>Buybox ve rakip fiyat takibini, belirlediğiniz minimum kâr hedeflerini gözeten bir yönetim yaklaşımıyla ele alıyoruz.</p></article>
@@ -209,7 +209,7 @@ export default function Storefront() {
         </section>
         <section className="corp-buybox" id="buybox">
           <div className="corp-buybox-copy">
-            <span className="corp-kicker">ENTEGRE ULTRA'NIN ÖNE ÇIKAN GÜCÜ</span>
+            <span className="corp-kicker">TREND ENTEGRE'NIN ÖNE ÇIKAN GÜCÜ</span>
             <h2>BUYBOX'INDA KAL.<br/><em>KÂRINI KORU.</em></h2>
             <p>Fiyat rekabetini yalnızca en düşük fiyat olarak görmeyin. Rakiplerinizi takip edin, minimum kâr sınırınızı belirleyin ve fiyat kararlarınızı veriye dayalı yönetin.</p>
             <div className="corp-buybox-actions"><a className="corp-primary" href="#cozumler">Buybox özelliklerini incele <ArrowRight size={17}/></a><span><ShieldCheck size={17}/> Kâr sınırı odaklı fiyat önerileri</span></div>
@@ -218,17 +218,17 @@ export default function Storefront() {
           <div className="corp-buybox-demo" aria-label="Örnek Buybox fiyat karşılaştırma paneli">
             <div className="corp-buybox-demo-head"><span><i/> ÖRNEK BUYBOX PANELİ</span><b>CANLI VERİ DEĞİLDİR</b></div>
             <div className="corp-buybox-status"><div><small>ÖRNEK DURUM</small><strong>Rekabet takibi</strong></div><span>● İzleme tasarımı</span></div>
-            <div className="corp-buybox-product"><div className="corp-product-thumb">EU</div><div><b>Örnek ürün</b><small>Ürün fiyat karşılaştırması</small></div><strong>₺849</strong></div>
+            <div className="corp-buybox-product"><div className="corp-product-thumb">TE</div><div><b>Örnek ürün</b><small>Ürün fiyat karşılaştırması</small></div><strong>₺849</strong></div>
             <div className="corp-price-list"><div><span>Senin mağazan</span><b>₺849</b><i className="corp-price-tag">ÖRNEK</i></div><div><span>Rakip mağaza A</span><b>₺859</b></div><div><span>Rakip mağaza B</span><b>₺879</b></div></div>
             <div className="corp-buybox-recommend"><span><small>ÖRNEK FİYAT ÖNERİSİ</small><strong>₺839</strong></span><span>Minimum kâr sınırı<br/><b>Koruma kuralı</b></span></div>
             <p className="corp-demo-note">Bu alan tasarım örneğidir. Gerçek rakip fiyatları ve Buybox durumu, pazaryeri bağlantıları etkinleştirildiğinde gösterilir.</p>
           </div>
         </section>
         <section className="corp-solutions" id="cozumler"><div className="corp-section-heading"><div><span className="corp-kicker">PLATFORM YETENEKLERİ</span><h2>İşinizi destekleyen <em>çözümler</em></h2></div><p>İhtiyaç duyduğunuz yönetim araçları, tek bir platform yaklaşımıyla.</p></div><div className="corp-feature-grid">{features.map(({icon:Icon,title,text},i)=><article className="corp-feature" key={title}><span className="corp-feature-icon"><Icon/></span><small>0{i+1}</small><h3>{title}</h3><p>{text}</p></article>)}</div></section>
-        <section className="corp-partner" id="bayilik"><div className="corp-partner-icon"><Building2/></div><div><span className="corp-kicker">İŞ ORTAKLIĞI PROGRAMI</span><h2>Entegre Ultra bayisi<br/><em>olmak ister misiniz?</em></h2><p>Bayi ağımıza katılın. Müşteri ve abonelik satışlarınızı yönetin, alt bayi yapınızı oluşturun, komisyon ve kazanç takibinizi tek panelden yapın.</p><button className="corp-primary" onClick={openApplication}>Bayi başvurusu yap <ArrowRight size={17}/></button></div><div className="corp-partner-points"><span><CheckCircle2/> Bayi ve alt bayi ağı</span><span><CheckCircle2/> Müşteri portföyü yönetimi</span><span><CheckCircle2/> Satış ve komisyon takibi</span></div></section>
-        <section className="corp-bottom-cta"><span className="corp-kicker">ŞİMDİ TANIŞALIM</span><h2>Ticaretiniz için yeni bir başlangıç.</h2><p>Entegre Ultra hakkında bilgi alın veya bayi başvurunuzu hemen iletin.</p><button className="corp-primary" onClick={openApplication}>Bize katılın <ArrowRight size={17}/></button></section>
+        <section className="corp-partner" id="bayilik"><div className="corp-partner-icon"><Building2/></div><div><span className="corp-kicker">İŞ ORTAKLIĞI PROGRAMI</span><h2>Trend Entegre bayisi<br/><em>olmak ister misiniz?</em></h2><p>Bayi ağımıza katılın. Müşteri ve abonelik satışlarınızı yönetin, alt bayi yapınızı oluşturun, komisyon ve kazanç takibinizi tek panelden yapın.</p><button className="corp-primary" onClick={openApplication}>Bayi başvurusu yap <ArrowRight size={17}/></button></div><div className="corp-partner-points"><span><CheckCircle2/> Bayi ve alt bayi ağı</span><span><CheckCircle2/> Müşteri portföyü yönetimi</span><span><CheckCircle2/> Satış ve komisyon takibi</span></div></section>
+        <section className="corp-bottom-cta"><span className="corp-kicker">ŞİMDİ TANIŞALIM</span><h2>Ticaretiniz için yeni bir başlangıç.</h2><p>Trend Entegre hakkında bilgi alın veya bayi başvurunuzu hemen iletin.</p><button className="corp-primary" onClick={openApplication}>Bize katılın <ArrowRight size={17}/></button></section>
       </main>
-      <footer className="corp-footer"><a className="corp-brand" href="#anasayfa"><span className="corp-logo">EU</span><span>Entegre <b>Ultra</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a><span>© 2026 Entegre Ultra. Tüm hakları saklıdır.</span><a href="#bayilik">Bayi başvurusu <ArrowRight size={14}/></a></footer>
+      <footer className="corp-footer"><a className="corp-brand" href="#anasayfa"><span className="corp-logo">TE</span><span>Trend <b>Entegre</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a><span>© 2026 Trend Entegre. Tüm hakları saklıdır.</span><a href="#bayilik">Bayi başvurusu <ArrowRight size={14}/></a></footer>
     </>}
   </div>;
 }
