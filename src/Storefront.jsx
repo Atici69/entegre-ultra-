@@ -70,6 +70,7 @@ export default function Storefront() {
       <a className="corp-brand" href="#anasayfa" aria-label="Trend Entegre ana sayfa"><span className="corp-logo">TE</span><span>Trend <b>Entegre</b><small>İŞİNİZİN DİJİTAL MERKEZİ</small></span></a>
       <button className="corp-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menüyü aç veya kapat">{menuOpen ? <X/> : <Menu/>}</button>
       <nav className={menuOpen ? 'corp-nav open' : 'corp-nav'}>
+        <a href="./public.html" onClick={() => setMenuOpen(false)}>Giriş yap</a>
         <a href="#xml-donusum" onClick={() => setMenuOpen(false)}>XML Dönüştürme</a><a href="#pazaryerleri" onClick={() => setMenuOpen(false)}>Pazaryerleri</a><a href="#buybox" onClick={() => setMenuOpen(false)}>Buybox</a><a href="#cozumler" onClick={() => setMenuOpen(false)}>Çözümlerimiz</a><a href="#paketler" onClick={(e) => { e.preventDefault(); setPricingOpen(true); setApplicationOpen(false); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Paketler</a>
         <a href="#hakkimizda" onClick={() => setMenuOpen(false)}>Hakkımızda</a>
         <a href="#bayilik" onClick={() => setMenuOpen(false)}>Bayilik</a>
