@@ -121,3 +121,17 @@ footer{border-top:1px solid #e9edf3;padding:17px 38px;color:#9ba5b3;font-size:9p
 @keyframes intro-fade-in{from{opacity:0}to{opacity:1}}@keyframes intro-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes intro-logo-pop{from{opacity:0;transform:scale(.65) rotate(-18deg)}to{opacity:1;transform:scale(1) rotate(-7deg)}}@keyframes intro-spin{to{transform:rotate(360deg)}}
 @media(max-height:650px){.intro-content{padding:18px 0}.intro-logo-wrap{width:78px;height:78px;margin-bottom:14px}.intro-logo{width:58px;height:58px;border-radius:19px;font-size:22px}.intro-marketplaces{margin-bottom:15px}.intro-features{margin-bottom:15px}.intro-features div{min-height:60px}.intro-lead{margin:9px 0 14px}}
 @media(prefers-reduced-motion:reduce){.intro-screen,.intro-content,.intro-logo,.intro-orbit{animation:none!important}}
+
+
+/* Mobil panel tipografisi: daha dengeli ve okunaklı */
+@media(max-width:700px){
+  .welcome-row h1{font-size:21px}
+  .subheading{font-size:11px}
+  .stat-card>strong{font-size:19px}
+  .section-heading h2,.panel-title h2{font-size:13px}
+  .section-heading p,.panel-title p{font-size:9px}
+  .hero-copy h2{font-size:clamp(21px,5.5vw,31px)}
+  .hero-copy p,.about-strip p,.seller-banner p{font-size:10px}
+  .shop-section-head h2,.about-strip h2,.seller-banner h2{font-size:16px}
+  .empty-state h2,.modal h2{font-size:16px}
+}
