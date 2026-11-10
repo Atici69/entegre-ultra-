@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { createClient } from '@supabase/supabase-js';
 import Storefront from './Storefront.jsx';
 import XMLCenter from './XMLCenter.jsx';
+import AuthGate from './AuthGate.jsx';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard, FileCode2,
   Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
@@ -35,6 +36,8 @@ const readLocal = (key) => {
 };
 
 function App() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [authRole, setAuthRole] = useState(null);
   const [showIntro, setShowIntro] = useState(() => Capacitor.isNativePlatform() && localStorage.getItem('te_intro_seen_v1') !== 'yes');
   const finishIntro = () => { localStorage.setItem('te_intro_seen_v1', 'yes'); setShowIntro(false); };
   useEffect(() => { const handleHomeNavigation = (event) => { if (event.data === 'trend-entegre:xml-center') setActive('XML Dönüştürme'); }; window.addEventListener('message', handleHomeNavigation); return () => window.removeEventListener('message', handleHomeNavigation); }, []);
@@ -119,6 +122,8 @@ function App() {
     'Reklamlar': 'Banner alanlarını ve sponsorlu ürün kampanyalarını yönetin.'
   };
 
+  if (!authenticated) return <AuthGate appMode onAuthenticated={(role) => { setAuthRole(role); setAuthenticated(true); }} />;
+  if (authRole === 'dealer') return <div style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:24,background:'#101b2d',fontFamily:'Inter,system-ui,sans-serif'}}><div style={{maxWidth:460,width:'100%',padding:32,borderRadius:20,background:'#fff',textAlign:'center'}}><div style={{fontWeight:900,fontSize:22,color:'#122b49'}}>Trend <span style={{color:'#f28a24'}}>Entegre</span></div><h1 style={{fontSize:26,color:'#122b49'}}>Bayi paneli</h1><p style={{fontSize:14,lineHeight:1.7,color:'#64748b'}}>Bayi hesabınız doğrulandı. Bayiye özel müşteri, alt bayi ve komisyon ekranları henüz bu sürüme bağlanmadı.</p><button className="primary-button" onClick={async () => { if (supabase) await supabase.auth.signOut(); setAuthenticated(false); setAuthRole(null); }}>Güvenli çıkış yap</button></div></div>;
   return <div className={active === 'Ana Sayfa' ? "app-shell home-view" : "app-shell"}>
     {showIntro && <div className="intro-screen" role="dialog" aria-label="Trend Entegre tanıtımı">
       <div className="intro-glow intro-glow-one"/><div className="intro-glow intro-glow-two"/>
@@ -151,6 +156,7 @@ function App() {
         </button>;
       })}</nav>
       <div className="sidebar-bottom"><CircleHelp size={17}/><span>Yardım ve destek</span></div>
+      <button className="sidebar-bottom" style={{width:'100%',border:0,background:'transparent',cursor:'pointer'}} onClick={async () => { if (supabase) await supabase.auth.signOut(); setAuthenticated(false); setAuthRole(null); }}><LockKeyhole size={17}/><span>Güvenli çıkış yap</span></button>
     </aside>
 
     <main className="main-area">
