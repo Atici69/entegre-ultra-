@@ -6,7 +6,7 @@ import XMLCenter from './XMLCenter.jsx';
 import AuthGate from './AuthGate.jsx';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard, FileCode2,
-  Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
+  Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight, LockKeyhole,
   Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList, Target, Megaphone, Network, Home
 } from 'lucide-react';
 
