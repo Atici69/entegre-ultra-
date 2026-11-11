@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { createClient } from '@supabase/supabase-js';
+import { auth, db, firebaseReady } from './firebase.js';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { collection, doc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
 import Storefront from './Storefront.jsx';
 import XMLCenter from './XMLCenter.jsx';
 import {
@@ -25,9 +27,7 @@ const navItems = [
   { label: 'Ayarlar', icon: Settings }
 ];
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = supabaseUrl && supabaseKey && /^https:\/\//i.test(supabaseUrl) ? createClient(supabaseUrl, supabaseKey) : null;
+const adminEmails = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
 
 const readLocal = (key) => {
   try { return JSON.parse(localStorage.getItem(key) || '[]'); }
@@ -92,10 +92,45 @@ function App() {
     setShowAdd(false);
   };
 
-  const signInDealerAdmin = async (e) => { e.preventDefault(); setDealerError(''); setDealerNotice(''); if (!supabase) { setDealerError('Supabase ayarları bulunamadı. GitHub Actions secrets içindeki VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY değerlerini kontrol edin.'); return; } setDealerBusy(true); try { const { data, error } = await supabase.auth.signInWithPassword({ email: dealerEmail.trim(), password: dealerPassword }); if (error) throw error; const role = data.user?.app_metadata?.role; if (role !== 'admin') { await supabase.auth.signOut(); throw new Error('Bu hesap bayi başvurularını görüntüleme yetkisine sahip değil. Supabase kullanıcı app_metadata alanında role=admin olmalı.'); } setDealerSession(data.session); await loadDealerApplications(); } catch (err) { setDealerError(err.message || 'Yönetici girişi başarısız.'); } finally { setDealerBusy(false); } };
-  const loadDealerApplications = async () => { if (!supabase) return; setDealerBusy(true); setDealerError(''); try { const { data, error } = await supabase.from('dealer_applications').select('id,name,company,phone,email,city,message,status,created_at').order('created_at', { ascending: false }); if (error) throw error; setDealerRows(data || []); } catch (err) { setDealerError(err.message || 'Başvurular yüklenemedi.'); } finally { setDealerBusy(false); } };
-  const updateDealerStatus = async (id, status) => { if (!supabase) return; setDealerError(''); try { const { error } = await supabase.from('dealer_applications').update({ status }).eq('id', id); if (error) throw error; setDealerRows(rows => rows.map(row => row.id === id ? { ...row, status } : row)); setDealerNotice('Başvuru durumu güncellendi.'); } catch (err) { setDealerError(err.message || 'Durum güncellenemedi.'); } };
-  const signOutDealerAdmin = async () => { if (supabase) await supabase.auth.signOut(); setDealerSession(null); setDealerRows([]); setDealerPassword(''); setDealerNotice(''); setDealerError(''); };
+  const signInDealerAdmin = async (e) => {
+    e.preventDefault(); setDealerError(''); setDealerNotice('');
+    if (!firebaseReady) { setDealerError('Firebase ayarları eksik. VITE_FIREBASE_* değişkenlerini GitHub Actions ortamına ekleyin.'); return; }
+    if (!adminEmails.length) { setDealerError('VITE_ADMIN_EMAILS tanımlı değil. Yönetici e-posta adresinizi virgülle ayrılmış şekilde ekleyin.'); return; }
+    setDealerBusy(true);
+    try {
+      const credential = await signInWithEmailAndPassword(auth, dealerEmail.trim(), dealerPassword);
+      const user = credential.user;
+      if (!adminEmails.includes((user.email || '').toLowerCase())) {
+        await signOut(auth);
+        throw new Error('Bu hesap bayi başvurularını görüntüleme yetkisine sahip değil.');
+      }
+      setDealerSession(user);
+      await loadDealerApplications();
+    } catch (err) { setDealerError(err.message || 'Yönetici girişi başarısız.'); }
+    finally { setDealerBusy(false); }
+  };
+  const loadDealerApplications = async () => {
+    if (!firebaseReady) return;
+    setDealerBusy(true); setDealerError('');
+    try {
+      const q = query(collection(db, 'dealer_applications'), orderBy('created_at', 'desc'));
+      const snapshot = await getDocs(q);
+      setDealerRows(snapshot.docs.map(item => ({ id: item.id, ...item.data() })));
+    } catch (err) { setDealerError(err.message || 'Başvurular yüklenemedi. Firestore güvenlik kurallarını kontrol edin.'); }
+    finally { setDealerBusy(false); }
+  };
+  const updateDealerStatus = async (id, status) => {
+    if (!firebaseReady) return;
+    setDealerError('');
+    try {
+      await updateDoc(doc(db, 'dealer_applications', id), { status });
+      setDealerRows(rows => rows.map(row => row.id === id ? { ...row, status } : row));
+      setDealerNotice('Başvuru durumu güncellendi.');
+    } catch (err) { setDealerError(err.message || 'Durum güncellenemedi.'); }
+  };
+  const signOutDealerAdmin = async () => {
+    try { await signOut(auth); } finally { setDealerSession(null); setDealerRows([]); setDealerPassword(''); setDealerNotice(''); setDealerError(''); }
+  };
 
   const openAdd = () => {
     setFormError('');
@@ -179,10 +214,10 @@ function App() {
           {!dealerSession ? <form className="entry-form" onSubmit={signInDealerAdmin}>
             <p>Başvuruları görüntülemek için yönetici hesabınızla giriş yapın.</p>
             <label>Yönetici e-posta<input type="email" autoComplete="username" required value={dealerEmail} onChange={e => setDealerEmail(e.target.value)} placeholder="yonetici@ornek.com" /></label>
-            <label>Şifre<input type="password" autoComplete="current-password" required value={dealerPassword} onChange={e => setDealerPassword(e.target.value)} placeholder="Supabase yönetici şifresi" /></label>
+            <label>Şifre<input type="password" autoComplete="current-password" required value={dealerPassword} onChange={e => setDealerPassword(e.target.value)} placeholder="Firebase yönetici şifresi" /></label>
             {dealerError && <p className="form-error" role="alert">{dealerError}</p>}
             <button className="primary-button form-submit" type="submit" disabled={dealerBusy}>{dealerBusy ? 'Giriş yapılıyor...' : 'Yönetici girişi'}</button>
-            <p className="muted-note">Güvenlik için başvurular yalnızca Supabase app_metadata alanında role=admin yetkisi bulunan hesaplara açılır.</p>
+            <p className="muted-note">Güvenlik için başvurular Firebase Firestore kurallarında izin verilen yönetici e-posta adreslerine açılır.</p>
           </form> : <>
             <div className="section-heading"><div><h2>Başvuru listesi</h2><p>{dealerRows.length} kayıt</p></div><div className="button-row"><button className="secondary-button" onClick={loadDealerApplications} disabled={dealerBusy}>Yenile</button><button className="secondary-button" onClick={signOutDealerAdmin}>Çıkış yap</button></div></div>
             {dealerError && <p className="form-error" role="alert">{dealerError}</p>}{dealerNotice && <p className="notice-box" role="status">{dealerNotice}</p>}
