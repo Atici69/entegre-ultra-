@@ -1,35 +1,38 @@
-# Entegre Ultra
+# Trend Entegre
 
-Entegre Ultra; React + Vite tabanlı yönetim paneli, kurumsal web sitesi ve Capacitor Android paketleme altyapısıdır.
+React + Vite + Capacitor tabanlı yönetim paneli, kurumsal web sitesi ve Android uygulaması.
 
 ## Geliştirme
 - Node.js 20+
-- `npm ci`
+- `npm install`
 - `npm run dev`
 
-## Kurumsal web sitesi
-- Giriş dosyası: `public.html`
-- Yayınlanan sayfa: GitHub Pages üzerinde `/public.html`
-- GitHub Actions iş akışı: **Deploy Entegre Ultra Website**
-- GitHub deposunda Settings > Pages > Build and deployment bölümünde Source değerini **GitHub Actions** seçin.
+## Firebase (ücretsiz başlangıç)
+İlk aşamada Firebase Spark planı kullanılacak. Authentication (e-posta/şifre) ve Cloud Firestore ücretsiz kotaları içinde yapılandırılır. Telefon SMS doğrulaması ve Cloud Functions bu ilk sürüm kapsamına dahil değildir.
+
+### Gerekli web yapılandırması
+1. Firebase Console'da mevcut Trend Entegre projesini açın.
+2. Project settings > General > Your apps bölümünden Web App yapılandırmasını alın.
+3. GitHub Actions repository variables/secrets veya hosting build ortamına şu değişkenleri ekleyin:
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
+   - `VITE_ADMIN_EMAILS` (virgülle ayrılmış yönetici e-posta adresleri)
+4. Firebase Authentication > Sign-in method bölümünde Email/Password girişini etkinleştirin ve yönetici hesabını oluşturun.
+5. `firestore.rules` dosyasındaki `REPLACE_WITH_ADMIN_EMAIL` yer tutucusunu gerçek yönetici e-posta adresinizle değiştirip Firebase Console > Firestore Database > Rules bölümünde yayınlayın.
+6. GitHub Actions iş akışının build adımına bu VITE değişkenlerinin verildiğini doğrulayın.
+
+Firebase web config değerleri istemci uygulamasında görünür; bunlar parola değildir. Güvenlik Firestore Rules ve Authentication ile sağlanır. Service account/private key gibi sunucu sırlarını hiçbir `VITE_` değişkenine veya APK'ya koymayın.
+
+## Firestore veri yapısı
+- `dealer_applications/{id}`: herkese açık bayi başvurusu oluşturma; yönetici e-postaları listeleme ve durum güncelleme.
+- `users/{uid}/products/{id}`, `users/{uid}/customers/{id}`: oturum açmış kullanıcının kendi kayıtları için ayrılmış alanlar.
 
 ## Android APK
-GitHub Actions içindeki **Build Android APK** iş akışını çalıştırın. Başarılı derlemenin ardından `entegre-ultra-debug-apk` adlı artifact içinden test APK'sı indirilebilir.
+GitHub Actions içindeki **Build Android APK** iş akışını çalıştırın. Firebase yapılandırma değişkenleri build sırasında verilmelidir.
 
-## Bayi başvuru sistemi
-1. Supabase Dashboard > SQL Editor bölümünde önce `supabase/migrations/202611050001_dealer_applications.sql`, ardından `supabase/migrations/202611090001_harden_dealer_applications.sql` dosyalarının tamamını sırayla çalıştırın. İkinci migration bayi başvurusu alanlarına uzunluk sınırı koyar ve anonim istemcinin kayıt kimliği, tarih veya başvuru durumunu belirlemesini engeller.
-2. Authentication > Users bölümünden yönetici hesabı oluşturun.
-3. Yönetici kullanıcısının **app_metadata** alanına `{"role":"admin"}` ekleyin (user_metadata değil).
-4. GitHub repository Settings > Secrets and variables > Actions bölümünde `VITE_SUPABASE_URL` ve `VITE_SUPABASE_ANON_KEY` değerlerini tanımlayın.
-5. Başvuru formu ve yönetici başvuru listesi bu Supabase projesini kullanır.
-
-Anonim ziyaretçiler yalnızca başvuru oluşturabilir. Başvuruları listeleme ve durum değiştirme işlemleri yalnızca app_metadata alanında admin rolü bulunan hesaplara açıktır. Supabase service-role anahtarını APK içine veya VITE_ değişkenlerine kesinlikle koymayın.
-
-## Sürüm notu
-Kurumsal web sayfası, yönetim panelinden ayrı olarak `public.html` üzerinden sunulur. Ürün, ödeme, pazaryeri ve bayi işlemlerinin gerçek zamanlı çalışması için ilgili servis ve API bağlantılarının tamamlanması gerekir.
-
-
-## Güvenlik notları
-- `VITE_SUPABASE_ANON_KEY` tarayıcı ve APK içinde görünür; bu anahtar gizli kabul edilmemelidir. Güvenlik, Supabase RLS politikaları ve daraltılmış tablo izinleriyle sağlanır.
-- `service_role` anahtarını hiçbir `VITE_` değişkenine, web dosyasına veya APK'ya eklemeyin.
-- Yeni bayi başvurusu güvenlik migration'ı Supabase SQL Editor'de çalıştırılmadan veritabanı tarafındaki sıkılaştırma canlıya uygulanmış sayılmaz.
+## Ücretlendirme notu
+Spark planında Firestore günlük ücretsiz kullanım kotası bulunur; kota aşılırsa ilgili ürün ay sonuna kadar durdurulabilir. Cloud Functions ve SMS Authentication gibi özellikler bu ücretsiz başlangıç mimarisine dahil değildir. Güncel koşullar: https://firebase.google.com/pricing
