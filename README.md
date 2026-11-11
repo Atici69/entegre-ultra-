@@ -22,7 +22,7 @@ React + Vite + Capacitor tabanlı yönetim paneli, kurumsal web sitesi ve Androi
    - `VITE_FIREBASE_APP_ID`
    - `VITE_ADMIN_EMAILS` (virgülle ayrılmış yönetici e-posta adresleri)
 4. Firebase Authentication > Sign-in method bölümünde Email/Password girişini etkinleştirin ve yönetici hesabını oluşturun.
-5. `firestore.rules` dosyasındaki `REPLACE_WITH_ADMIN_EMAIL` yer tutucusunu gerçek yönetici e-posta adresinizle değiştirip Firebase Console > Firestore Database > Rules bölümünde yayınlayın.
+5. Yönetici hesabının e-posta adresini Firebase Authentication üzerinden doğrulayın. `firestore.rules` dosyasındaki `REPLACE_WITH_ADMIN_EMAIL` yer tutucusunu aynı adresle değiştirip Firebase Console > Firestore Database > Rules bölümünde yayınlayın.
 6. GitHub Actions iş akışının build adımına bu VITE değişkenlerinin verildiğini doğrulayın.
 
 Firebase web config değerleri istemci uygulamasında görünür; bunlar parola değildir. Güvenlik Firestore Rules ve Authentication ile sağlanır. Service account/private key gibi sunucu sırlarını hiçbir `VITE_` değişkenine veya APK'ya koymayın.
