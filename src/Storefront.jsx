@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db, firebaseReady } from './firebase.js';
 import { ArrowRight, ArrowUpRight, BarChart3, Boxes, Building2, CheckCircle2, ChevronDown, Download, FileCode2, Globe2, Handshake, Layers3, Menu, Network, RefreshCw, ShieldCheck, Store, TrendingUp, Trophy, X, Zap } from 'lucide-react';
 
 const features = [
@@ -10,9 +12,6 @@ const features = [
   { icon: Network, title: 'Bayi ağı yönetimi', text: 'Bayi, alt bayi ve müşteri ilişkilerinizi düzenli bir yapıda yönetin.' },
   { icon: Zap, title: 'Reklam ve kampanyalar', text: 'Banner ve tanıtım alanlarınızı planlayıp yönetebileceğiniz bir altyapı.' }
 ];
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export default function Storefront() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,8 +37,7 @@ export default function Storefront() {
     setSubmitError('');
     setSubmitting(true);
     try {
-      if (!supabaseUrl || !supabaseKey) throw new Error('Başvuru sistemi henüz yapılandırılmadı. Lütfen daha sonra tekrar deneyin.');
-      if (!/^https:\/\//i.test(supabaseUrl)) throw new Error('Supabase proje adresi geçersiz.');
+      if (!firebaseReady) throw new Error('Bayi başvuru sistemi henüz yapılandırılmadı. Firebase ayarları eksik.');
       const payload = {
         name: form.name.trim().slice(0, 120),
         company: form.company.trim().slice(0, 160) || null,
@@ -51,10 +49,7 @@ export default function Storefront() {
       if (payload.name.length < 2) throw new Error('Ad soyad en az 2 karakter olmalıdır.');
       if (payload.phone.length < 5) throw new Error('Geçerli bir telefon numarası girin.');
       if (payload.email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(payload.email)) throw new Error('E-posta adresini kontrol edin.');
-      const { createClient } = await import('@supabase/supabase-js');
-      const client = createClient(supabaseUrl, supabaseKey);
-      const { error } = await client.from('dealer_applications').insert([payload]);
-      if (error) throw error;
+      await addDoc(collection(db, 'dealer_applications'), { ...payload, status: 'pending', created_at: serverTimestamp() });
       setSubmitted(true);
       setForm({ name: '', company: '', phone: '', email: '', city: '', message: '' });
     } catch (error) {
