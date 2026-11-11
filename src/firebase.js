@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: "FIREBASE_API_KEY",
+  apiKey: "AIzaSyAaHp6NRiMkEGn2IBwfCaS7gxMrJqokslU",
   authDomain: "trend-entegre.firebaseapp.com",
   databaseURL: "https://trend-entegre-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "trend-entegre",
