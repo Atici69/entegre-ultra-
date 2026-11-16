@@ -145,7 +145,7 @@ export default function XMLCenter() {
       await saveXmlSource(source);
       setSavedSources(await listXmlSources());
       setSourceName(name);
-      setNotice(name + ' kaynağı kaydedildi. Trendyol ön kontrolünde seçilebilir.');
+      setNotice(name + ' kaynağı kaydedildi. Hesapla giriş yaptıysanız buluta da aktarıldı; Trendyol ön kontrolünde seçilebilir.');
       setError('');
     } catch (err) { setError(err?.message || 'XML kaynağı kaydedilemedi.'); }
   };
@@ -209,7 +209,7 @@ export default function XMLCenter() {
         {products.length > 0 && <div className="notice-box" style={{marginTop:12}}>
           <label className="field-label">Kaynak adı<input className="wide-input" value={sourceName} onChange={e=>setSourceName(e.target.value)} placeholder={fileName || 'Örn. Ana tedarikçi XML'} /></label>
           <button className="primary-button" type="button" onClick={saveCurrentSource} style={{marginTop:10}}>Kaynak olarak kaydet</button>
-          <small style={{display:'block',marginTop:8}}>{savedSources.length} kayıtlı XML kaynağı bu cihazda mevcut.</small>
+          <small style={{display:'block',marginTop:8}}>{savedSources.length} kayıtlı XML kaynağı bulundu. Hesapla giriş yaptığınızda kaynaklar cihazlar arasında eşitlenir.</small>
         </div>}
         <div className="notice-box">Excel başlıkları ürün adı, stok kodu, barkod, kategori, fiyat, stok, görsel ve açıklama alanlarıyla otomatik eşleştirilir. Bulunamayan alanlar boş bırakılır.</div>
       </section>
