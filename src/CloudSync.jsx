@@ -35,24 +35,6 @@ async function migrateProducts(user) {
   return [...merged.values()];
 }
 
-async function persistProducts(user, products) {
-  const productsRef = collection(db, 'users', user.uid, 'products');
-  const snapshot = await getDocs(productsRef);
-  const currentIds = new Set(products.map(product => safeId(product.id)));
-  const operations = [];
-  products.forEach(product => operations.push({ type: 'set', id: safeId(product.id), data: product }));
-  snapshot.docs.forEach(item => { if (!currentIds.has(item.id)) operations.push({ type: 'delete', id: item.id }); });
-  for (let start = 0; start < operations.length; start += 400) {
-    const batch = writeBatch(db);
-    operations.slice(start, start + 400).forEach(operation => {
-      const ref = doc(productsRef, operation.id);
-      if (operation.type === 'set') batch.set(ref, operation.data);
-      else batch.delete(ref);
-    });
-    await batch.commit();
-  }
-}
-
 export default function CloudSync({ products, onProductsLoaded }) {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
@@ -90,13 +72,7 @@ export default function CloudSync({ products, onProductsLoaded }) {
     return unsubscribe;
   }, [onProductsLoaded]);
 
-  useEffect(() => {
-    if (!user || !ready) return;
-    const timer = window.setTimeout(() => {
-      persistProducts(user, products).catch(err => setError(err?.message || 'Ürünler buluta kaydedilemedi.'));
-    }, 500);
-    return () => window.clearTimeout(timer);
-  }, [user, ready, products]);
+
 
   const submit = async event => {
     event.preventDefault();
