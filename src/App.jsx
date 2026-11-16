@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { createClient } from '@supabase/supabase-js';
 import Storefront from './Storefront.jsx';
 import XMLCenter from './XMLCenter.jsx';
+import TrendyolPrecheck from './TrendyolPrecheck.jsx';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard, FileCode2,
   Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
@@ -14,6 +15,7 @@ const navItems = [
   { label: 'Genel Bakış', icon: LayoutDashboard },
   { label: 'Mağaza Vitrini', icon: Home },
   { label: 'XML Dönüştürme', icon: FileCode2 },
+  { label: 'Trendyol Ön Kontrol', icon: ClipboardList },
   { label: 'Ürünler', icon: Package },
   { label: 'Siparişler', icon: ShoppingCart },
   { label: 'Buybox', icon: Target },
@@ -173,6 +175,7 @@ function App() {
 
         {active === 'Mağaza Vitrini' && <Storefront />}
         {active === 'XML Dönüştürme' && <XMLCenter />}
+        {active === 'Trendyol Ön Kontrol' && <TrendyolPrecheck />}
 
         {active === 'Bayi Yönetimi' && <div className="panel-card data-panel">
           <div className="panel-title"><div><h2>Bayi başvuruları</h2><p>Mağaza vitrini üzerinden gönderilen başvurular</p></div><Network size={20}/></div>
