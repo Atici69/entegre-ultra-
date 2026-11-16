@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
+import { saveXmlSource, listXmlSources } from './xmlSources.js';
 import { FileCode2, Upload, Download, RefreshCw, CheckCircle2, AlertCircle, Boxes, FileSpreadsheet } from 'lucide-react';
 
 const FIELD_ALIASES = {
@@ -64,7 +65,10 @@ export default function XMLCenter() {
   const [isExporting,setIsExporting] = useState(false);
   const [limit,setLimit] = useState('all');
   const [pricePercent,setPricePercent] = useState('0');
+  const [sourceName,setSourceName] = useState('');
+  const [savedSources,setSavedSources] = useState([]);
   const fileRef = useRef(null);
+  useEffect(() => { listXmlSources().then(setSavedSources).catch(() => setSavedSources([])); }, []);
   const excelRef = useRef(null);
   const [mapping,setMapping] = useState({ name:'name',sku:'sku',barcode:'barcode',category:'category',price:'price',stock:'stock',image:'image',description:'description' });
   const columns = useMemo(() => Object.keys(LABELS),[]);
@@ -133,6 +137,18 @@ export default function XMLCenter() {
     } catch(err) { setProducts([]); setError(err.message || 'Excel dosyası okunamadı.'); }
     e.target.value='';
   };
+  const saveCurrentSource = async () => {
+    if (!products.length) return;
+    const name = sourceName.trim() || fileName.replace(/\\.[^.]+$/, '') || 'XML Kaynağı';
+    try {
+      const source = { id: (globalThis.crypto?.randomUUID?.() || ('xml-' + Date.now() + '-' + Math.random().toString(36).slice(2))), name, fileName: fileName || name, productCount: products.length, products, updatedAt: new Date().toISOString() };
+      await saveXmlSource(source);
+      setSavedSources(await listXmlSources());
+      setSourceName(name);
+      setNotice(name + ' kaynağı kaydedildi. Trendyol ön kontrolünde seçilebilir.');
+      setError('');
+    } catch (err) { setError(err?.message || 'XML kaynağı kaydedilemedi.'); }
+  };
   const buildXml = async () => {
     if (!selectedProducts.length || isExporting) return;
     setError('');
@@ -190,6 +206,11 @@ export default function XMLCenter() {
         {fileName && <div className="notice-box">Seçilen dosya: {fileName}</div>}
         <label className="field-label">XML içeriği<textarea className="xml-textarea" value={xmlText} onChange={e=>setXmlText(e.target.value)} placeholder={'<products>\n  <product>\n    <name>Örnek ürün</name>\n    <price>199.90</price>\n  </product>\n</products>'}/></label>
         <button className="primary-button xml-parse" type="button" onClick={()=>parse(xmlText)} disabled={!xmlText.trim()}><RefreshCw size={16}/> XML içeriğini oku</button>
+        {products.length > 0 && <div className="notice-box" style={{marginTop:12}}>
+          <label className="field-label">Kaynak adı<input className="wide-input" value={sourceName} onChange={e=>setSourceName(e.target.value)} placeholder={fileName || 'Örn. Ana tedarikçi XML'} /></label>
+          <button className="primary-button" type="button" onClick={saveCurrentSource} style={{marginTop:10}}>Kaynak olarak kaydet</button>
+          <small style={{display:'block',marginTop:8}}>{savedSources.length} kayıtlı XML kaynağı bu cihazda mevcut.</small>
+        </div>}
         <div className="notice-box">Excel başlıkları ürün adı, stok kodu, barkod, kategori, fiyat, stok, görsel ve açıklama alanlarıyla otomatik eşleştirilir. Bulunamayan alanlar boş bırakılır.</div>
       </section>
       <section className="panel-card"><div className="panel-title"><div><h2>2. Dönüşüm ayarları</h2><p>Ürün adedini ve fiyat kuralını belirleyin.</p></div><Boxes size={20}/></div>
