@@ -8,7 +8,7 @@ service cloud.firestore {
     function isAdmin() {
       return signedIn()
         && request.auth.token.email_verified == true
-        && request.auth.token.email in ['REPLACE_WITH_ADMIN_EMAIL'];
+        && request.auth.token.email == 'yakupatici020@gmail.com';
     }
 
     match /dealer_applications/{applicationId} {
