@@ -67,8 +67,8 @@ export default function TrendyolPrecheck() {
       const value = product?.[key];
       return value === undefined || value === null || String(value).trim() === '';
     }).map(([, label]) => label);
-    if (product?.price && (!Number.isFinite(Number(product.price)) || Number(product.price) <= 0)) missing.push('Geçerli fiyat');
-    if (product?.stock && (!Number.isFinite(Number(product.stock)) || Number(product.stock) < 0)) missing.push('Geçerli stok');
+    if (product?.price !== undefined && product?.price !== null && String(product.price).trim() !== '' && (!Number.isFinite(Number(product.price)) || Number(product.price) <= 0)) missing.push('Geçerli fiyat');
+    if (product?.stock !== undefined && product?.stock !== null && String(product.stock).trim() !== '' && (!Number.isFinite(Number(product.stock)) || Number(product.stock) < 0)) missing.push('Geçerli stok');
     return { ...product, _row: index + 1, _missing: missing };
   }), [products]);
 
