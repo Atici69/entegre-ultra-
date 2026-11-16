@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { auth, db, firebaseReady } from './firebase.js';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { collection, doc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, orderBy, query, updateDoc, writeBatch } from 'firebase/firestore';
 import Storefront from './Storefront.jsx';
 import XMLCenter from './XMLCenter.jsx';
 import TrendyolPrecheck from './TrendyolPrecheck.jsx';
@@ -69,6 +69,31 @@ function App() {
   const addBanner = (e) => { e.preventDefault(); if (!bannerTitle.trim()) return; setBanners(prev => [{ id: Date.now(), title: bannerTitle.trim(), slot: bannerSlot, active: true }, ...prev]); setBannerTitle(''); };
 
   useEffect(() => { localStorage.setItem('eu_products', JSON.stringify(products)); }, [products]);
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) return;
+    const timer = window.setTimeout(async () => {
+      try {
+        const productsRef = collection(db, 'users', user.uid, 'products');
+        const snapshot = await getDocs(productsRef);
+        const ids = new Set(products.map(product => String(product.id).replaceAll('/', '_')));
+        const operations = products.map(product => ({ type: 'set', id: String(product.id).replaceAll('/', '_'), data: product }));
+        snapshot.docs.forEach(item => { if (!ids.has(item.id)) operations.push({ type: 'delete', id: item.id }); });
+        for (let start = 0; start < operations.length; start += 400) {
+          const batch = writeBatch(db);
+          operations.slice(start, start + 400).forEach(operation => {
+            const ref = doc(productsRef, operation.id);
+            if (operation.type === 'set') batch.set(ref, operation.data);
+            else batch.delete(ref);
+          });
+          await batch.commit();
+        }
+      } catch (error) {
+        console.error('Ürün bulut eşitlemesi başarısız:', error);
+      }
+    }, 700);
+    return () => window.clearTimeout(timer);
+  }, [products]);
   useEffect(() => { localStorage.setItem('eu_customers', JSON.stringify(customers)); }, [customers]);
 
   const filteredProducts = useMemo(() => products.filter(p =>
@@ -234,7 +259,7 @@ function App() {
         {active === 'Genel Bakış' && <>
           <div className="trial-banner">
             <div className="trial-icon"><TrendingUp size={21}/></div>
-            <div><strong>Trend Entegre ilk sürüm</strong><p>Ürün ve müşteri kayıtları bu cihazda saklanır. Sunucu senkronizasyonu henüz etkin değil.</p></div>
+            <div><strong>Trend Entegre ilk sürüm</strong><p>Ürün ve XML kayıtları hesapla oturum açıldığında bulutla eşitlenir; cihazdaki eski kayıtlar aktarım tamamlanana kadar korunur.</p></div>
             <button onClick={() => setActive('Ürünler')}>Ürün ekle <ArrowUpRight size={16}/></button>
           </div>
           <div className="section-heading"><div><h2>Genel durum</h2><p>Mağazanızın güncel özeti</p></div><span className="date-chip">Yerel kayıtlar</span></div>
@@ -248,7 +273,7 @@ function App() {
           <div className="lower-grid">
             <article className="panel-card"><div className="panel-title"><div><h2>Ürün yönetimi</h2><p>Ürün ve stok kayıtlarını oluşturun</p></div><Package size={20}/></div>
               <div className="guide-list"><div><b>1</b><span><strong>Ürün ekleyin</strong><small>Ürün adı, stok kodu, fiyat ve stok miktarı</small></span></div>
-                <div><b>2</b><span><strong>Kayıtları düzenli tutun</strong><small>Eklediğiniz ürünler cihazınızda saklanır</small></span></div></div>
+                <div><b>2</b><span><strong>Kayıtları düzenli tutun</strong><small>Hesabınızla web ve Android arasında eşitlenir</small></span></div></div>
               <button className="secondary-button" onClick={() => setActive('Ürünler')}>Ürünlere git</button>
             </article>
             <article className="panel-card"><div className="panel-title"><div><h2>Müşteri yönetimi</h2><p>Müşteri iletişim kayıtları</p></div><Users size={20}/></div>
