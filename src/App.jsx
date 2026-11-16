@@ -6,15 +6,17 @@ import { collection, doc, getDocs, orderBy, query, updateDoc } from 'firebase/fi
 import Storefront from './Storefront.jsx';
 import XMLCenter from './XMLCenter.jsx';
 import TrendyolPrecheck from './TrendyolPrecheck.jsx';
+import CloudSync from './CloudSync.jsx';
 import {
   LayoutDashboard, Package, ShoppingCart, Store, Users, CreditCard, FileCode2,
-  Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight,
+  Settings, Bell, Search, Plus, TrendingUp, Boxes, ArrowUpRight, Cloud,
   Menu, X, ChevronDown, CircleHelp, Trash2, ClipboardList, Target, Megaphone, Network, Home
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Ana Sayfa', icon: Home },
   { label: 'Genel Bakış', icon: LayoutDashboard },
+  { label: 'Bulut Senkronizasyonu', icon: Cloud },
   { label: 'Mağaza Vitrini', icon: Home },
   { label: 'XML Dönüştürme', icon: FileCode2 },
   { label: 'Trendyol Ön Kontrol', icon: ClipboardList },
@@ -209,6 +211,7 @@ function App() {
         </div>
 
         {active === 'Mağaza Vitrini' && <Storefront />}
+        {active === 'Bulut Senkronizasyonu' && <CloudSync products={products} onProductsLoaded={setProducts} />}
         {active === 'XML Dönüştürme' && <XMLCenter />}
         {active === 'Trendyol Ön Kontrol' && <TrendyolPrecheck />}
 
@@ -297,7 +300,7 @@ function App() {
             </tbody></table></div>}
         </div>}
 
-        {active !== 'Genel Bakış' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && active !== 'XML Dönüştürme' && active !== 'Mağaza Vitrini' && active !== 'Ana Sayfa' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
+        {active !== 'Genel Bakış' && active !== 'Bulut Senkronizasyonu' && active !== 'Ürünler' && active !== 'Müşteriler' && active !== 'Buybox' && active !== 'Reklamlar' && active !== 'Bayi Yönetimi' && active !== 'XML Dönüştürme' && active !== 'Mağaza Vitrini' && active !== 'Ana Sayfa' && <div className="empty-state"><div className="empty-icon"><ClipboardList size={28}/></div><h2>{active}</h2><p>{titleCopy[active] || 'Bu bölüm sonraki geliştirme aşamasında açılacaktır.'}</p><button className="secondary-button" onClick={() => setActive('Genel Bakış')}>Genel bakışa dön</button></div>}
       </section>}
       <footer>© 2026 Trend Entegre <span>İlk sürüm · Geliştirme aşamasında</span></footer>
     </main>
