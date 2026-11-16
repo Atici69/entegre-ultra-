@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { saveXmlSource, listXmlSources } from './xmlSources.js';
 import { FileCode2, Upload, Download, RefreshCw, CheckCircle2, AlertCircle, Boxes, FileSpreadsheet } from 'lucide-react';
@@ -139,7 +139,7 @@ export default function XMLCenter() {
   };
   const saveCurrentSource = async () => {
     if (!products.length) return;
-    const name = sourceName.trim() || fileName.replace(/\\.[^.]+$/, '') || 'XML Kaynağı';
+    const name = sourceName.trim() || fileName.replace(/\.[^.]+$/, '') || 'XML Kaynağı';
     try {
       const source = { id: (globalThis.crypto?.randomUUID?.() || ('xml-' + Date.now() + '-' + Math.random().toString(36).slice(2))), name, fileName: fileName || name, productCount: products.length, products, updatedAt: new Date().toISOString() };
       await saveXmlSource(source);
