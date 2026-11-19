@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { getPool, closePool } from './db.js';
+import { apiRouter } from './routes.js';
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
@@ -27,6 +28,7 @@ app.use('/api', rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false
 }));
+app.use('/api', apiRouter);
 
 app.get('/health', (_req, res) => {
   res.json({
