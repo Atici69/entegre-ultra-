@@ -19,6 +19,41 @@ export function parseStockMovement(body = {}) {
   return { value: { type, quantityMilli: type === 'out' ? -quantity : quantity } };
 }
 
+export function decimalToMinor(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || Math.abs(number) > 9999999999) return null;
+  const scaled = Math.round(number * 100);
+  return Math.abs(number * 100 - scaled) < 1e-7 ? scaled : null;
+}
+
+export function parseOrderDraft(body = {}) {
+  if (!Array.isArray(body.items) || body.items.length < 1 || body.items.length > 100) {
+    return { error: 'Order must contain between 1 and 100 items' };
+  }
+  const shippingCents = body.shipping_total == null ? 0 : decimalToMinor(body.shipping_total);
+  if (shippingCents === null || shippingCents < 0) return { error: 'shipping_total must be non-negative with at most 2 decimal places' };
+  const currency = String(body.currency || 'TRY').trim().toUpperCase();
+  if (!/^[A-Z]{3}$/.test(currency)) return { error: 'currency must be a 3-letter code' };
+  const items = [];
+  let subtotalCents = 0;
+  for (const item of body.items) {
+    const productId = positiveId(item?.product_id);
+    const quantityMilli = decimalToMilli(item?.quantity);
+    const unitPriceCents = decimalToMinor(item?.unit_price);
+    if (!productId || quantityMilli === null || quantityMilli <= 0 || unitPriceCents === null || unitPriceCents < 0) {
+      return { error: 'Each order item requires a valid product_id, positive quantity (max 3 decimals), and non-negative unit_price (max 2 decimals)' };
+    }
+    const lineCents = Math.round(quantityMilli * unitPriceCents / 1000);
+    if (!Number.isSafeInteger(lineCents) || lineCents < 0) return { error: 'Order item total is out of range' };
+    subtotalCents += lineCents;
+    if (!Number.isSafeInteger(subtotalCents) || subtotalCents > 999999999999) return { error: 'Order total is out of range' };
+    items.push({ productId, quantity: quantityMilli / 1000, unitPrice: unitPriceCents / 100, lineTotal: lineCents / 100 });
+  }
+  const grandCents = subtotalCents + shippingCents;
+  if (!Number.isSafeInteger(grandCents) || grandCents > 999999999999) return { error: 'Order total is out of range' };
+  return { value: { items, currency, subtotal: subtotalCents / 100, shippingTotal: shippingCents / 100, grandTotal: grandCents / 100 } };
+}
+
 export function parseVariant(body = {}) {
   const sku = body.variant_sku == null || body.variant_sku === '' ? null : String(body.variant_sku).trim();
   const barcode = body.barcode == null || body.barcode === '' ? null : String(body.barcode).trim();
