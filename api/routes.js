@@ -2,6 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getPool } from './db.js';
+import { positiveId, parseStockMovement, parseVariant, decimalToMilli } from './validation.js';
 
 const router = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -179,6 +180,150 @@ router.patch('/stores/:storeId/products/:productId', authenticate, ownedStore, a
     if (!result.affectedRows) return res.status(404).json({ error: 'Product not found' });
     return res.json({ ok: true });
   } catch (error) { return next(error); }
+});
+
+
+router.get('/stores/:storeId/products/:productId/variants', authenticate, ownedStore, async (req, res, next) => {
+  const productId = positiveId(req.params.productId);
+  if (!productId) return res.status(400).json({ error: 'Invalid product id' });
+  try {
+    const [rows] = await getPool().execute(
+      'SELECT v.id, v.product_id, v.variant_sku, v.barcode, v.attributes, v.sale_price, v.stock_quantity, v.created_at, v.updated_at FROM product_variants v INNER JOIN products p ON p.id = v.product_id WHERE v.product_id = ? AND p.store_id = ? ORDER BY v.id DESC',
+      [productId, req.storeId]
+    );
+    return res.json({ variants: rows });
+  } catch (error) { return next(error); }
+});
+
+router.post('/stores/:storeId/products/:productId/variants', authenticate, ownedStore, async (req, res, next) => {
+  const productId = positiveId(req.params.productId);
+  if (!productId) return res.status(400).json({ error: 'Invalid product id' });
+  const parsed = parseVariant(req.body || {});
+  if (parsed.error) return res.status(400).json({ error: parsed.error });
+  let connection;
+  let transactionStarted = false;
+  try {
+    connection = await getPool().getConnection();
+    await connection.beginTransaction();
+    transactionStarted = true;
+    const [products] = await connection.execute(
+      'SELECT id FROM products WHERE id = ? AND store_id = ? FOR UPDATE',
+      [productId, req.storeId]
+    );
+    if (!products.length) {
+      await connection.rollback();
+      transactionStarted = false;
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    const v = parsed.value;
+    const [result] = await connection.execute(
+      'INSERT INTO product_variants (product_id, variant_sku, barcode, attributes, sale_price, stock_quantity) VALUES (?, ?, ?, ?, ?, 0)',
+      [productId, v.sku, v.barcode, v.attributes === null ? null : JSON.stringify(v.attributes), v.price]
+    );
+    if (v.stock > 0) {
+      await connection.execute(
+        'UPDATE product_variants SET stock_quantity = ? WHERE id = ?',
+        [v.stock, result.insertId]
+      );
+      await connection.execute(
+        'INSERT INTO stock_movements (store_id, product_id, variant_id, movement_type, quantity, reference_type, reference_id, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [req.storeId, productId, result.insertId, 'in', v.stock, 'variant_initial_stock', String(result.insertId), 'Initial variant stock']
+      );
+    }
+    await connection.commit();
+    transactionStarted = false;
+    return res.status(201).json({
+      variant: { id: result.insertId, product_id: productId, variant_sku: v.sku, barcode: v.barcode, attributes: v.attributes, sale_price: v.price, stock_quantity: v.stock }
+    });
+  } catch (error) {
+    if (connection && transactionStarted) await connection.rollback();
+    return next(error);
+  } finally { if (connection) connection.release(); }
+});
+
+router.get('/stores/:storeId/products/:productId/stock-movements', authenticate, ownedStore, async (req, res, next) => {
+  const productId = positiveId(req.params.productId);
+  if (!productId) return res.status(400).json({ error: 'Invalid product id' });
+  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
+  try {
+    const [rows] = await getPool().execute(
+      'SELECT id, product_id, variant_id, movement_type, quantity, reference_type, reference_id, note, created_at FROM stock_movements WHERE product_id = ? AND store_id = ? ORDER BY id DESC LIMIT ?',
+      [productId, req.storeId, limit]
+    );
+    return res.json({ movements: rows, limit });
+  } catch (error) { return next(error); }
+});
+
+router.post('/stores/:storeId/products/:productId/stock-movements', authenticate, ownedStore, async (req, res, next) => {
+  const productId = positiveId(req.params.productId);
+  if (!productId) return res.status(400).json({ error: 'Invalid product id' });
+  const parsed = parseStockMovement(req.body || {});
+  if (parsed.error) return res.status(400).json({ error: parsed.error });
+  const variantId = req.body?.variant_id == null || req.body.variant_id === '' ? null : positiveId(req.body.variant_id);
+  if (req.body?.variant_id != null && req.body.variant_id !== '' && !variantId) {
+    return res.status(400).json({ error: 'Invalid variant_id' });
+  }
+  const note = req.body?.note == null ? null : String(req.body.note).trim();
+  if (note && note.length > 500) return res.status(400).json({ error: 'note is too long' });
+  let connection;
+  let transactionStarted = false;
+  try {
+    connection = await getPool().getConnection();
+    await connection.beginTransaction();
+    transactionStarted = true;
+    const [products] = await connection.execute(
+      'SELECT id, stock_quantity FROM products WHERE id = ? AND store_id = ? FOR UPDATE',
+      [productId, req.storeId]
+    );
+    if (!products.length) {
+      await connection.rollback();
+      transactionStarted = false;
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    let currentMilli;
+    let updateSql;
+    let updateParams;
+    if (variantId) {
+      const [variants] = await connection.execute(
+        'SELECT id, stock_quantity FROM product_variants WHERE id = ? AND product_id = ? FOR UPDATE',
+        [variantId, productId]
+      );
+      if (!variants.length) {
+        await connection.rollback();
+        transactionStarted = false;
+        return res.status(404).json({ error: 'Variant not found' });
+      }
+      currentMilli = decimalToMilli(variants[0].stock_quantity);
+      updateSql = 'UPDATE product_variants SET stock_quantity = ? WHERE id = ?';
+      updateParams = [null, variantId];
+    } else {
+      currentMilli = decimalToMilli(products[0].stock_quantity);
+      updateSql = 'UPDATE products SET stock_quantity = ? WHERE id = ? AND store_id = ?';
+      updateParams = [null, productId, req.storeId];
+    }
+    if (currentMilli === null) throw new Error('Stored stock quantity has unsupported precision');
+    const nextMilli = currentMilli + parsed.value.quantityMilli;
+    if (nextMilli < 0) {
+      await connection.rollback();
+      transactionStarted = false;
+      return res.status(409).json({ error: 'Insufficient stock for this movement' });
+    }
+    updateParams[0] = nextMilli / 1000;
+    await connection.execute(updateSql, updateParams);
+    const signedQuantity = parsed.value.quantityMilli / 1000;
+    const [movement] = await connection.execute(
+      'INSERT INTO stock_movements (store_id, product_id, variant_id, movement_type, quantity, note) VALUES (?, ?, ?, ?, ?, ?)',
+      [req.storeId, productId, variantId, parsed.value.type, signedQuantity, note]
+    );
+    await connection.commit();
+    transactionStarted = false;
+    return res.status(201).json({
+      movement: { id: movement.insertId, product_id: productId, variant_id: variantId, movement_type: parsed.value.type, quantity: signedQuantity, resulting_stock: nextMilli / 1000 }
+    });
+  } catch (error) {
+    if (connection && transactionStarted) await connection.rollback();
+    return next(error);
+  } finally { if (connection) connection.release(); }
 });
 
 export { router as apiRouter, authenticate };
