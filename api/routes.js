@@ -41,15 +41,18 @@ async function ownedStore(req, res, next) {
 }
 
 router.post('/auth/register', async (req, res, next) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const fullName = String(req.body.full_name || '').trim();
-  const password = String(req.body.password || '');
-  const storeName = String(req.body.store_name || '').trim();
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) return res.status(503).json({ error: 'Authentication is not configured' });
+  const body = req.body || {};
+  const email = String(body.email || '').trim().toLowerCase();
+  const fullName = String(body.full_name || '').trim();
+  const password = String(body.password || '');
+  const storeName = String(body.store_name || '').trim();
   if (!emailPattern.test(email) || email.length > 190 || fullName.length < 2 || fullName.length > 190 || password.length < 10 || password.length > 128 || storeName.length < 2 || storeName.length > 190) {
     return res.status(400).json({ error: 'Valid email, name, store name and a password of at least 10 characters are required' });
   }
-  const connection = await getPool().getConnection();
+  let connection;
   try {
+    connection = await getPool().getConnection();
     await connection.beginTransaction();
     const [existing] = await connection.execute('SELECT id FROM users WHERE email = ? LIMIT 1', [email]);
     if (existing.length) {
@@ -71,12 +74,13 @@ router.post('/auth/register', async (req, res, next) => {
   } catch (error) {
     await connection.rollback();
     return next(error);
-  } finally { connection.release(); }
+  } finally { if (connection) connection.release(); }
 });
 
 router.post('/auth/login', async (req, res, next) => {
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const password = String(req.body.password || '');
+  const body = req.body || {};
+  const email = String(body.email || '').trim().toLowerCase();
+  const password = String(body.password || '');
   try {
     const [rows] = await getPool().execute(
       'SELECT id, email, full_name, role, status, password_hash FROM users WHERE email = ? LIMIT 1',
