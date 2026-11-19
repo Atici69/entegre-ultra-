@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { decimalToMilli, parseStockMovement, parseVariant, positiveId } from '../validation.js';
+import { decimalToMilli, decimalToMinor, parseOrderDraft, parseStockMovement, parseVariant, positiveId } from '../validation.js';
 
 test('positiveId accepts only positive safe integers', () => {
   assert.equal(positiveId('12'), 12);
@@ -57,4 +57,40 @@ test('decimalToMilli preserves three decimal places exactly', () => {
   assert.equal(decimalToMilli('0.125'), 125);
   assert.equal(decimalToMilli('4'), 4000);
   assert.equal(decimalToMilli('0.0001'), null);
+});
+
+test('order draft calculates line, subtotal and shipping totals', () => {
+  assert.deepEqual(parseOrderDraft({
+    shipping_total: '12.50',
+    currency: 'try',
+    items: [
+      { product_id: '7', quantity: '2.5', unit_price: '19.90' },
+      { product_id: 8, quantity: 1, unit_price: 10 }
+    ]
+  }), {
+    value: {
+      items: [
+        { productId: 7, quantity: 2.5, unitPrice: 19.9, lineTotal: 49.75 },
+        { productId: 8, quantity: 1, unitPrice: 10, lineTotal: 10 }
+      ],
+      currency: 'TRY',
+      subtotal: 59.75,
+      shippingTotal: 12.5,
+      grandTotal: 72.25
+    }
+  });
+});
+
+test('order draft rejects invalid item data and oversized orders', () => {
+  assert.ok(parseOrderDraft({ items: [] }).error);
+  assert.ok(parseOrderDraft({ items: [{ product_id: 1, quantity: 0, unit_price: 1 }] }).error);
+  assert.ok(parseOrderDraft({ items: [{ product_id: 1, quantity: 1, unit_price: -1 }] }).error);
+  assert.ok(parseOrderDraft({ currency: 'TL', items: [{ product_id: 1, quantity: 1, unit_price: 1 }] }).error);
+  assert.ok(parseOrderDraft({ items: Array.from({ length: 101 }, () => ({ product_id: 1, quantity: 1, unit_price: 1 })) }).error);
+});
+
+test('currency conversion helpers enforce decimal precision', () => {
+  assert.equal(decimalToMinor('12.34'), 1234);
+  assert.equal(decimalToMinor('12.345'), null);
+  assert.equal(decimalToMilli('0.125'), 125);
 });
