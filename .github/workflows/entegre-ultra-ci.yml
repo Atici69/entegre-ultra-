@@ -33,3 +33,5 @@ jobs:
       - run: npm install
       - run: node --check server.js
       - run: node --check routes.js
+      - run: node --check validation.js
+      - run: npm test
