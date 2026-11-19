@@ -2,7 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getPool } from './db.js';
-import { positiveId, parseStockMovement, parseVariant, decimalToMilli } from './validation.js';
+import { positiveId, parseStockMovement, parseVariant, decimalToMilli, parseOrderDraft } from './validation.js';
 
 const router = Router();
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -319,6 +319,90 @@ router.post('/stores/:storeId/products/:productId/stock-movements', authenticate
     transactionStarted = false;
     return res.status(201).json({
       movement: { id: movement.insertId, product_id: productId, variant_id: variantId, movement_type: parsed.value.type, quantity: signedQuantity, resulting_stock: nextMilli / 1000 }
+    });
+  } catch (error) {
+    if (connection && transactionStarted) await connection.rollback();
+    return next(error);
+  } finally { if (connection) connection.release(); }
+});
+
+
+router.get('/stores/:storeId/orders', authenticate, ownedStore, async (req, res, next) => {
+  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
+  const offset = Math.max(0, Number(req.query.offset) || 0);
+  try {
+    const [rows] = await getPool().execute(
+      'SELECT id, external_order_id, order_status, currency, subtotal, shipping_total, commission_total, grand_total, ordered_at, created_at FROM orders WHERE store_id = ? ORDER BY id DESC LIMIT ? OFFSET ?',
+      [req.storeId, limit, offset]
+    );
+    return res.json({ orders: rows, limit, offset });
+  } catch (error) { return next(error); }
+});
+
+router.get('/stores/:storeId/orders/:orderId', authenticate, ownedStore, async (req, res, next) => {
+  const orderId = positiveId(req.params.orderId);
+  if (!orderId) return res.status(400).json({ error: 'Invalid order id' });
+  try {
+    const [orders] = await getPool().execute(
+      'SELECT id, external_order_id, order_status, currency, subtotal, shipping_total, commission_total, grand_total, ordered_at, created_at FROM orders WHERE id = ? AND store_id = ? LIMIT 1',
+      [orderId, req.storeId]
+    );
+    if (!orders.length) return res.status(404).json({ error: 'Order not found' });
+    const [items] = await getPool().execute(
+      'SELECT id, product_id, external_product_id, product_name, sku, quantity, unit_price, line_total FROM order_items WHERE order_id = ? ORDER BY id',
+      [orderId]
+    );
+    return res.json({ order: orders[0], items });
+  } catch (error) { return next(error); }
+});
+
+router.post('/stores/:storeId/orders', authenticate, ownedStore, async (req, res, next) => {
+  const parsed = parseOrderDraft(req.body || {});
+  if (parsed.error) return res.status(400).json({ error: parsed.error });
+  let connection;
+  let transactionStarted = false;
+  try {
+    connection = await getPool().getConnection();
+    await connection.beginTransaction();
+    transactionStarted = true;
+    const productSnapshots = [];
+    for (const item of parsed.value.items) {
+      const [products] = await connection.execute(
+        'SELECT id, name, sku FROM products WHERE id = ? AND store_id = ? AND status = ? FOR UPDATE',
+        [item.productId, req.storeId, 'active']
+      );
+      if (!products.length) {
+        await connection.rollback();
+        transactionStarted = false;
+        return res.status(400).json({ error: `Product ${item.productId} is unavailable in this store` });
+      }
+      productSnapshots.push(products[0]);
+    }
+    const order = parsed.value;
+    const [result] = await connection.execute(
+      'INSERT INTO orders (store_id, order_status, currency, subtotal, shipping_total, grand_total, ordered_at) VALUES (?, ?, ?, ?, ?, ?, NOW())',
+      [req.storeId, 'new', order.currency, order.subtotal, order.shippingTotal, order.grandTotal]
+    );
+    for (let index = 0; index < order.items.length; index += 1) {
+      const item = order.items[index];
+      const product = productSnapshots[index];
+      await connection.execute(
+        'INSERT INTO order_items (order_id, product_id, product_name, sku, quantity, unit_price, line_total) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [result.insertId, product.id, product.name, product.sku, item.quantity, item.unitPrice, item.lineTotal]
+      );
+    }
+    await connection.commit();
+    transactionStarted = false;
+    return res.status(201).json({
+      order: {
+        id: result.insertId,
+        store_id: req.storeId,
+        order_status: 'new',
+        currency: order.currency,
+        subtotal: order.subtotal,
+        shipping_total: order.shippingTotal,
+        grand_total: order.grandTotal
+      }
     });
   } catch (error) {
     if (connection && transactionStarted) await connection.rollback();
